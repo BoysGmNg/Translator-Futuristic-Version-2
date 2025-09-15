@@ -17,7 +17,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp, onSnapshot, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp, onSnapshot, deleteDoc, updateDoc, getDocs, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
         // KONFIGURASI FIREBASE ANDA
         const firebaseConfig = {
@@ -39,7 +38,6 @@
             db = getFirestore(app);
             // Membuat layanan Firebase dapat diakses secara global untuk kemudahan
             window.firebaseServices = { auth, db, collection, addDoc, serverTimestamp, doc, setDoc, getDoc, onSnapshot, deleteDoc, updateDoc };
-            window.firebaseServices = { auth, db, collection, addDoc, serverTimestamp, doc, setDoc, getDoc, onSnapshot, deleteDoc, updateDoc, getDocs, query, orderBy, limit, where };
             console.log("Firebase initialized successfully");
         } catch (e) {
             console.error("Error initializing Firebase. Please check your config.", e);
@@ -795,9 +793,8 @@
         let currentQuiz = null;
         let quizHistory = [];
         let cameraStream = null;
+        let userProfileUnsubscribe = null;
         let unsubscribeFromPartners = null;
-        
-        let userSavedCache = new Set(); // Cache untuk ID terjemahan yang disimpan pengguna
         
         // --- 3. API & CORE FUNCTIONS ---
         async function translate(text, sourceLang, targetLang) {
@@ -927,31 +924,6 @@
         const getFromStorage = (key) => JSON.parse(localStorage.getItem(key)) || [];
         function saveToHistory(item) { let history = getFromStorage(HISTORY_KEY); history.unshift(item); if (history.length > 50) history.pop(); saveToStorage(HISTORY_KEY, history); }
         function updateSaveButtonState() { const savedItems = getFromStorage(SAVED_KEY); if (currentTranslationData.id && savedItems.some(item => item.id === currentTranslationData.id)) { saveTranslationBtn.classList.add('saved', 'text-yellow-500'); saveTranslationBtn.title = "Hapus dari simpanan"; } else { saveTranslationBtn.classList.remove('saved', 'text-yellow-500'); saveTranslationBtn.title = "Simpan terjemahan"; } }
-        
-        async function saveToHistory(item) {
-            if (currentUser) {
-                const { db, collection, addDoc, serverTimestamp } = window.firebaseServices;
-                try {
-                    await addDoc(collection(db, 'users', currentUser.uid, 'history'), {
-                        ...item,
-                        timestamp: serverTimestamp()
-                    });
-                } catch (error) {
-                    console.error("Error saving history to Firestore:", error);
-                }
-            } else {
-                let history = getFromStorage(HISTORY_KEY);
-                history.unshift(item);
-                if (history.length > 50) history.pop();
-                saveToStorage(HISTORY_KEY, history);
-            }
-        }
-
-        function updateSaveButtonState() {
-            const isSaved = currentUser ? userSavedCache.has(currentTranslationData.id?.toString()) : getFromStorage(SAVED_KEY).some(item => item.id === currentTranslationData.id);
-            if (currentTranslationData.id && isSaved) { saveTranslationBtn.classList.add('saved', 'text-yellow-500'); saveTranslationBtn.title = "Hapus dari simpanan"; } else { saveTranslationBtn.classList.remove('saved', 'text-yellow-500'); saveTranslationBtn.title = "Simpan terjemahan"; }
-        }
-
         function speak(text, lang, tone = 'standar') { if (!text || !('speechSynthesis' in window)) return; window.speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(text); const settings = getVoiceSettings(); utterance.rate = settings.speed; utterance.lang = lang; window.speechSynthesis.speak(utterance); }
         function showNotification(message) { notification.textContent = message; notification.classList.remove('opacity-0'); setTimeout(() => notification.classList.add('opacity-0'), 2500); }
         async function getDefinition(word, lang) { dictionaryResultEl.innerHTML = `Mencari definisi untuk "<b>${word}</b>"...`; dictionaryResultEl.classList.remove('hidden'); try { const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/${lang}/${word}`); if (!response.ok) throw new Error('Definisi tidak ditemukan.'); const data = await response.json(); let content = `<h3>Definisi untuk <b>${data[0].word}</b></h3>`; data[0].meanings.forEach(meaning => { content += `<p class="italic text-slate-500 mt-2">${meaning.partOfSpeech}</p>`; meaning.definitions.forEach((def, i) => { content += `<p class="ml-2">${i + 1}. ${def.definition}</p>`; if(def.example) content += `<p class="ml-4 text-sm text-slate-400">Contoh: "${def.example}"</p>`}); }); dictionaryResultEl.innerHTML = content; } catch (error) { window.open(`https://www.google.com/search?q=arti+${encodeURIComponent(word)}`, '_blank'); dictionaryResultEl.classList.add('hidden'); } }
@@ -1253,44 +1225,6 @@
         function renderList(listContainer, items, type) { listContainer.innerHTML = items.length === 0 ? `<p class="text-slate-500 dark:text-slate-400 text-center">Tidak ada item.</p>` : ''; items.forEach(item => { const isSaved = getFromStorage(SAVED_KEY).some(s => s.id === item.id); const itemEl = document.createElement('div'); itemEl.className = 'p-3 border-b dark:border-gray-700'; let buttons = type === 'history' ? `<button class="action-btn text-blue-500 disabled:text-gray-400" data-action="save" data-id="${item.id}" ${isSaved ? 'disabled' : ''}>${isSaved ? 'Tersimpan' : 'Simpan'}</button><button class="action-btn text-red-500" data-action="delete-history" data-id="${item.id}">Hapus</button>` : `<button class="action-btn text-yellow-500" data-action="unsave" data-id="${item.id}">Hapus Simpanan</button>`; itemEl.innerHTML = `<div class="history-item-content cursor-pointer" data-id="${item.id}"><div class="text-xs text-slate-500 dark:text-slate-400 mb-1">${languages[item.sourceLang] || 'Auto'} &rarr; ${languages[item.targetLang]}</div><p class="font-semibold truncate">${item.sourceText}</p><p class="text-blue-500 dark:text-blue-400 truncate">${item.translatedText}</p></div><div class="flex gap-4 mt-2 text-xs">${buttons}</div>`; listContainer.appendChild(itemEl); }); }
         function loadHistoryItem(id) { const item = getFromStorage(HISTORY_KEY).find(i => i.id === id); if (item) { document.querySelector('.tab-btn[data-tab="text"]').click(); sourceLangEl.value = item.sourceLang; targetLangEl.value = item.targetLang; sourceTextEl.value = item.sourceText; handleTextTranslation(); historyModal.classList.remove('flex'); savedModal.classList.remove('flex'); } }
         function mainListClickHandler(e) { const actionBtn = e.target.closest('.action-btn'); if (actionBtn) { const { action, id } = actionBtn.dataset; let history = getFromStorage(HISTORY_KEY); let saved = getFromStorage(SAVED_KEY); const numericId = parseInt(id, 10); if (action === 'save') { const itemToSave = history.find(item => item.id === numericId); if (itemToSave && !saved.some(s => s.id === numericId)) { saved.unshift(itemToSave); saveToStorage(SAVED_KEY, saved); } } else if (action === 'unsave') { saved = saved.filter(item => item.id !== numericId); saveToStorage(SAVED_KEY, saved); } else if (action === 'delete-history') { history = history.filter(item => item.id !== numericId); saved = saved.filter(item => item.id !== numericId); saveToStorage(HISTORY_KEY, history); saveToStorage(SAVED_KEY, saved); } renderList(historyList, getFromStorage(HISTORY_KEY), 'history'); renderList(savedList, getFromStorage(SAVED_KEY), 'saved'); updateSaveButtonState(); return; } const content = e.target.closest('.history-item-content'); if (content) { loadHistoryItem(parseInt(content.dataset.id, 10)); } }
-        function renderList(listContainer, items, type) { listContainer.innerHTML = items.length === 0 ? `<p class="text-slate-500 dark:text-slate-400 text-center">Tidak ada item.</p>` : ''; items.forEach(item => { const isSaved = currentUser ? userSavedCache.has(item.id.toString()) : getFromStorage(SAVED_KEY).some(s => s.id === item.id); const itemEl = document.createElement('div'); itemEl.className = 'p-3 border-b dark:border-gray-700'; let buttons = type === 'history' ? `<button class="action-btn text-blue-500 disabled:text-gray-400" data-action="save" data-id="${item.id}" ${isSaved ? 'disabled' : ''}>${isSaved ? 'Tersimpan' : 'Simpan'}</button><button class="action-btn text-red-500" data-action="delete-history" data-id="${item.id}">Hapus</button>` : `<button class="action-btn text-yellow-500" data-action="unsave" data-id="${item.id}">Hapus Simpanan</button>`; itemEl.innerHTML = `<div class="history-item-content cursor-pointer" data-item='${JSON.stringify(item)}'><div class="text-xs text-slate-500 dark:text-slate-400 mb-1">${languages[item.sourceLang] || 'Auto'} &rarr; ${languages[item.targetLang]}</div><p class="font-semibold truncate">${item.sourceText}</p><p class="text-blue-500 dark:text-blue-400 truncate">${item.translatedText}</p></div><div class="flex gap-4 mt-2 text-xs">${buttons}</div>`; listContainer.appendChild(itemEl); }); }
-        function loadHistoryItem(item) { if (item) { document.querySelector('.tab-btn[data-tab="text"]').click(); sourceLangEl.value = item.sourceLang; targetLangEl.value = item.targetLang; sourceTextEl.value = item.sourceText; handleTextTranslation(); historyModal.classList.remove('flex'); savedModal.classList.remove('flex'); } }
-        
-        async function mainListClickHandler(e) {
-            const actionBtn = e.target.closest('.action-btn');
-            if (actionBtn) {
-                const { action, id } = actionBtn.dataset;
-                if (currentUser) {
-                    const { db, doc, deleteDoc, setDoc } = window.firebaseServices;
-                    if (action === 'delete-history') {
-                        await deleteDoc(doc(db, 'users', currentUser.uid, 'history', id));
-                        showNotification("Dihapus dari histori.");
-                        openHistoryModal(); // Refresh list
-                    } else if (action === 'unsave') {
-                        await deleteDoc(doc(db, 'users', currentUser.uid, 'saved', id));
-                        userSavedCache.delete(id);
-                        showNotification("Dihapus dari simpanan.");
-                        openSavedModal(); // Refresh list
-                    } else if (action === 'save') {
-                        const itemToSave = JSON.parse(e.target.closest('.p-3').querySelector('.history-item-content').dataset.item);
-                        await setDoc(doc(db, 'users', currentUser.uid, 'saved', id), { ...itemToSave, timestamp: serverTimestamp() });
-                        userSavedCache.add(id);
-                        showNotification("Disimpan!");
-                        openHistoryModal(); // Refresh list
-                    }
-                } else {
-                    // Fallback to localStorage
-                    let history = getFromStorage(HISTORY_KEY); let saved = getFromStorage(SAVED_KEY); const numericId = parseInt(id, 10); if (action === 'save') { const itemToSave = history.find(item => item.id === numericId); if (itemToSave && !saved.some(s => s.id === numericId)) { saved.unshift(itemToSave); saveToStorage(SAVED_KEY, saved); } } else if (action === 'unsave') { saved = saved.filter(item => item.id !== numericId); saveToStorage(SAVED_KEY, saved); } else if (action === 'delete-history') { history = history.filter(item => item.id !== numericId); saved = saved.filter(item => item.id !== numericId); saveToStorage(HISTORY_KEY, history); saveToStorage(SAVED_KEY, saved); } renderList(historyList, getFromStorage(HISTORY_KEY), 'history'); renderList(savedList, getFromStorage(SAVED_KEY), 'saved');
-                }
-                updateSaveButtonState();
-                return;
-            }
-            const content = e.target.closest('.history-item-content');
-            if (content) {
-                loadHistoryItem(JSON.parse(content.dataset.item));
-            }
-        }
-
         function updateView() { imageTransformer.style.transform = `scale(${zoomState.level}) translate(${zoomState.pan.x}px, ${zoomState.pan.y}px)`; zoomLevelDisplay.textContent = `${Math.round(zoomState.level * 100)}%`; }
         function resetZoom() { zoomState = { level: 1, pan: { x: 0, y: 0 }, isPanning: false, start: { x: 0, y: 0 } }; updateView(); }
         function addConversationBubble(sourceText, translatedText, sourceLang) { conversationPlaceholder.classList.add('hidden'); const bubble = document.createElement('div'); const isLang1 = sourceLang === conversationLang1.value || (sourceLang === 'auto' && activeMicButton.id === 'mic-btn-1'); bubble.className = `w-full flex mb-2 ${isLang1 ? 'justify-end' : 'justify-start'}`; bubble.innerHTML = `<div class="max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-lg ${isLang1 ? 'bg-blue-500 text-white' : 'bg-slate-200 dark:bg-gray-700'}"><p class="font-semibold">${sourceText}</p><p class="text-sm opacity-90 mt-1">${translatedText}</p></div>`; conversationView.appendChild(bubble); conversationView.scrollTop = conversationView.scrollHeight; }
@@ -1308,6 +1242,7 @@
                     details: metadata,
                     ab_test_group: localStorage.getItem('ab_test_group') || 'A' // Melacak grup A/B test
                 });
+                updateUserStatsAndBadges(activityType, metadata); // Panggil fungsi untuk update poin & lencana
             } catch (error) {
                 console.error("Error logging activity:", error);
             }
@@ -1597,6 +1532,73 @@
             }
         }
 
+        // --- FUNGSI BARU: GAMIFIKASI (POIN & LENCANA) ---
+        const badgeDefinitions = {
+            beginner_translator: { name: "Penerjemah Pemula", condition: (stats) => stats.translationCount >= 10 },
+            expert_translator: { name: "Penerjemah Ahli", condition: (stats) => stats.translationCount >= 100 },
+            corrector: { name: "Korektor Andal", condition: (stats) => stats.aiCorrectionCount >= 5 },
+            polyglot: { name: "Polyglot", condition: (stats) => (stats.languagesUsed?.length || 0) >= 5 },
+            image_wizard: { name: "Penyihir Gambar", condition: (stats) => stats.imageTranslationCount >= 10 },
+        };
+
+        async function updateUserStatsAndBadges(activityType, metadata) {
+            if (!currentUser) return;
+            const { db, doc, getDoc, updateDoc, increment, arrayUnion } = window.firebaseServices;
+            const userRef = doc(db, "users", currentUser.uid);
+
+            const pointsMap = {
+                'translate_text': 1, 'translate_voice': 3, 'translate_image': 5,
+                'translate_document': 5, 'translate_subtitle': 10, 'translate_lyrics': 2,
+                'translate_code': 2, 'check_grammar': 2, 'start_quiz': 1
+            };
+            const pointsToAdd = pointsMap[activityType] || 0;
+
+            try {
+                const userDoc = await getDoc(userRef);
+                if (!userDoc.exists()) return;
+
+                const stats = userDoc.data();
+                let updates = { points: increment(pointsToAdd) };
+                let newStats = { ...stats, points: (stats.points || 0) + pointsToAdd };
+
+                // Update counters
+                if (activityType.startsWith('translate_')) {
+                    updates.translationCount = increment(1);
+                    newStats.translationCount = (stats.translationCount || 0) + 1;
+                    if (metadata.to) {
+                        updates.languagesUsed = arrayUnion(metadata.to);
+                        newStats.languagesUsed = [...new Set([...(stats.languagesUsed || []), metadata.to])];
+                    }
+                }
+                if (activityType === 'check_grammar') {
+                    updates.aiCorrectionCount = increment(1);
+                    newStats.aiCorrectionCount = (stats.aiCorrectionCount || 0) + 1;
+                }
+                 if (activityType === 'translate_image') {
+                    updates.imageTranslationCount = increment(1);
+                    newStats.imageTranslationCount = (stats.imageTranslationCount || 0) + 1;
+                }
+
+                // Check for new badges
+                const newlyEarnedBadges = [];
+                for (const badgeId in badgeDefinitions) {
+                    if (!stats.badges?.includes(badgeId) && badgeDefinitions[badgeId].condition(newStats)) {
+                        newlyEarnedBadges.push(badgeId);
+                    }
+                }
+
+                if (newlyEarnedBadges.length > 0) {
+                    updates.badges = arrayUnion(...newlyEarnedBadges);
+                    updates.points = increment(pointsToAdd + (newlyEarnedBadges.length * 25)); // Bonus 25 poin per lencana
+                    newlyEarnedBadges.forEach(badgeId => {
+                        setTimeout(() => showNotification(`🎉 Lencana Baru Diperoleh: ${badgeDefinitions[badgeId].name}!`), 500);
+                    });
+                }
+
+                await updateDoc(userRef, updates);
+            } catch (error) { console.error("Error updating user stats:", error); }
+        }
+
         function initializeSpeechRecognition() { const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SpeechRecognition) { speechRecognitionUnsupported.classList.remove('hidden'); micBtn1.disabled = true; micBtn2.disabled = true; return; } recognition = new SpeechRecognition(); recognition.continuous = false; recognition.interimResults = true; recognition.onstart = () => { isRecording = true; if(activeMicButton) activeMicButton.classList.add('recording', 'pulse-red'); }; recognition.onend = () => { isRecording = false; if(activeMicButton) activeMicButton.classList.remove('recording', 'pulse-red'); activeMicButton = null; }; recognition.onerror = (event) => { console.error('Speech recognition error:', event.error); if(activeMicButton) activeMicButton.classList.remove('recording', 'pulse-red'); }; recognition.onresult = async (event) => { let finalTranscript = ''; for (let i = event.resultIndex; i < event.results.length; ++i) { if (event.results[i].isFinal) finalTranscript += event.results[i][0].transcript; } if (finalTranscript && activeMicButton) { const sourceLang = document.getElementById(activeMicButton.dataset.langSelect).value; const targetLang = activeMicButton.id === 'mic-btn-1' ? conversationLang2.value : conversationLang1.value; const [translated] = await translate(finalTranscript, sourceLang, targetLang); addConversationBubble(finalTranscript, translated, sourceLang); speak(translated, targetLang); saveToHistory({ id: Date.now(), sourceLang, targetLang, sourceText: `[Percakapan] ${finalTranscript}`, translatedText: translated }); logUserActivity('translate_voice'); } }; }
         window.setupAuthUI = async (user) => { 
             currentUser = user; 
@@ -1623,12 +1625,11 @@
                 }
                 await getApiKeyFromFirestore(user.uid); 
                 await getUserProfile(user.uid); 
-                await loadUserFirestoreData(user.uid);
+                listenToUserProfile(user.uid); 
             } else { 
                 currentUser = null; 
                 userApiKeys = {}; 
                 quizHistory = []; 
-                userSavedCache.clear();
                 authContainer.classList.remove('hidden'); 
                 userInfo.classList.add('hidden'); 
                 userEmailEl.textContent = ''; 
@@ -1638,23 +1639,45 @@
                 bottomButtons.classList.remove('flex'); 
                 manageUpdatesBtn.classList.add('hidden'); 
                 adminTabBtn.classList.add('hidden');
+                if (userProfileUnsubscribe) userProfileUnsubscribe(); // Hentikan listener saat logout
                 goOfflineAsPartner(); 
             } 
         }
         async function getApiKeyFromFirestore(userId) { const { db, doc, getDoc } = window.firebaseServices; try { const docSnap = await getDoc(doc(db, 'users', userId)); if (docSnap.exists() && docSnap.data().apiKeys) { userApiKeys = docSnap.data().apiKeys; } else { userApiKeys = {}; } } catch (error) { console.error("Error getting API key:", error); userApiKeys = {}; } }
         async function saveApiKeyToFirestore(userId, provider, apiKey) { const { db, doc, setDoc } = window.firebaseServices; try { if (!userApiKeys) userApiKeys = {}; userApiKeys[provider] = apiKey; await setDoc(doc(db, 'users', userId), { apiKeys: userApiKeys }, { merge: true }); showNotification('Kunci API berhasil disimpan!'); } catch (error) { showNotification('Gagal menyimpan kunci API.'); } }
-        async function loadUserFirestoreData(userId) {
-            const { db, collection, getDocs } = window.firebaseServices;
-            try {
-                const savedSnapshot = await getDocs(collection(db, 'users', userId, 'saved'));
-                userSavedCache.clear();
-                savedSnapshot.forEach(doc => userSavedCache.add(doc.id));
-            } catch (error) {
-                console.error("Error loading user saved data:", error);
-            }
-            updateSaveButtonState();
-        }
         async function getUserProfile(userId) { const { db, doc, getDoc, setDoc } = window.firebaseServices; try { const docSnap = await getDoc(doc(db, 'users', userId)); if (docSnap.exists()) { const data = docSnap.data(); const points = data.points || 0; userPointsEl.textContent = points; profilePointsEl.textContent = `${points} Poin`; profileEmailEl.textContent = currentUser.email; } else { await setDoc(doc(db, 'users', userId), { email: currentUser.email, points: 0, isBanned: false, badges: [] }); } } catch (error) { console.error("Error getting user profile:", error); } }
+        
+        function listenToUserProfile(userId) {
+            const { db, doc, onSnapshot, setDoc } = window.firebaseServices;
+            const userRef = doc(db, "users", userId);
+            if (userProfileUnsubscribe) userProfileUnsubscribe(); // Hentikan listener lama jika ada
+
+            userProfileUnsubscribe = onSnapshot(userRef, async (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const points = data.points || 0;
+                    userPointsEl.textContent = points;
+                    profilePointsEl.textContent = `${points} Poin`;
+                    profileEmailEl.textContent = currentUser.email;
+                    renderBadges(data.badges || []);
+                } else {
+                    await setDoc(userRef, { email: currentUser.email, points: 0, isBanned: false, badges: [], translationCount: 0, aiCorrectionCount: 0, imageTranslationCount: 0, languagesUsed: [] });
+                }
+            }, (error) => { console.error("Error listening to user profile:", error); });
+        }
+
+        function renderBadges(earnedBadges) {
+            const badgesContainer = document.getElementById('badges-container');
+            badgesContainer.querySelectorAll('.badge').forEach(badgeEl => {
+                const badgeId = badgeEl.dataset.badgeId;
+                if (earnedBadges.includes(badgeId)) {
+                    badgeEl.classList.add('earned');
+                } else {
+                    badgeEl.classList.remove('earned');
+                }
+            });
+        }
+
         async function showWordOfTheDay() { 
             wordOfTheDayContent.innerHTML = '<div class="loader"></div>'; 
             changeWordBtn.disabled = true; 
@@ -1722,38 +1745,6 @@
         }
         function checkQuizAnswer(button, selected, correct) { document.querySelectorAll('.quiz-option').forEach(btn => btn.disabled = true); if (selected === correct) { button.classList.add('correct'); quizFeedback.textContent = 'Jawaban Benar! 🎉'; quizFeedback.className = 'mt-4 text-center font-semibold text-green-600'; } else { button.classList.add('incorrect'); quizFeedback.textContent = `Salah. Jawaban yang benar adalah "${correct}".`; quizFeedback.className = 'mt-4 text-center font-semibold text-red-600'; } nextQuizBtn.classList.remove('hidden'); }
         
-        async function openHistoryModal() {
-            historyList.innerHTML = '<p class="text-center text-slate-400">Memuat histori...</p>';
-            historyModal.classList.add('flex');
-            let items = [];
-            if (currentUser) {
-                const { db, collection, getDocs, query, orderBy, limit } = window.firebaseServices;
-                const q = query(collection(db, 'users', currentUser.uid, 'history'), orderBy('timestamp', 'desc'), limit(50));
-                const querySnapshot = await getDocs(q);
-                querySnapshot.forEach((doc) => {
-                    items.push({ ...doc.data(), id: doc.id });
-                });
-            } else {
-                items = getFromStorage(HISTORY_KEY);
-            }
-            renderList(historyList, items, 'history');
-        }
-
-        async function openSavedModal() {
-            savedList.innerHTML = '<p class="text-center text-slate-400">Memuat item tersimpan...</p>';
-            savedModal.classList.add('flex');
-            let items = [];
-            if (currentUser) {
-                const { db, collection, getDocs, query, orderBy } = window.firebaseServices;
-                const q = query(collection(db, 'users', currentUser.uid, 'saved'), orderBy('timestamp', 'desc'));
-                const querySnapshot = await getDocs(q);
-                querySnapshot.forEach((doc) => items.push({ ...doc.data(), id: doc.id }));
-            } else {
-                items = getFromStorage(SAVED_KEY);
-            }
-            renderList(savedList, items, 'saved');
-        }
-        
         function loadAiProviderPreference() {
             const savedProvider = localStorage.getItem('ai_provider');
             if (savedProvider && ['gemini', 'deepseek', 'chatgpt'].includes(savedProvider)) {
@@ -1794,8 +1785,6 @@
         tabBtns.forEach(btn => btn.addEventListener('click', (e) => { if(btn.disabled) return; logUserActivity('change_tab', { tab: btn.dataset.tab }); tabBtns.forEach(b => { b.classList.remove('tab-active', 'text-slate-500', 'dark:text-slate-400', 'text-red-500'); if(b === btn) b.classList.add('tab-active'); else b.classList.add('text-slate-500', 'dark:text-slate-400'); }); tabPanels.forEach(p => p.classList.add('hidden')); document.getElementById(`${btn.dataset.tab}-panel`).classList.remove('hidden'); if (btn.dataset.tab === 'quiz') generateQuiz(); if (btn.dataset.tab === 'camera') startCamera(); else stopCamera(); if (btn.dataset.tab === 'partner' && currentUser) listenForPartners(); else if (unsubscribeFromPartners) unsubscribeFromPartners(); if (btn.dataset.tab === 'admin' && currentUser.email === ADMIN_EMAIL) renderAdminPanel();}));
         historyBtn.addEventListener('click', () => { renderList(historyList, getFromStorage(HISTORY_KEY), 'history'); historyModal.classList.add('flex'); });
         savedBtn.addEventListener('click', () => { renderList(savedList, getFromStorage(SAVED_KEY), 'saved'); savedModal.classList.add('flex'); });
-        historyBtn.addEventListener('click', openHistoryModal);
-        savedBtn.addEventListener('click', openSavedModal);
         settingsBtn.addEventListener('click', () => settingsModal.classList.add('flex'));
         
         const apiPlaceholders = {
