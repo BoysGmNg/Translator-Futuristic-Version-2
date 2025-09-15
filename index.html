@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Penerjemah Hoshi (Ditingkatkan)</title>
     <title>Penerjemah Neural Hoshi 10000</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;800&display=swap" rel="stylesheet">
     <!-- Tesseract.js untuk OCR pada gambar -->
     <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
@@ -75,13 +73,6 @@
         applyTheme();
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        /* Custom Scrollbar */
-        textarea::-webkit-scrollbar, .scrollable::-webkit-scrollbar { width: 8px; }
-        textarea::-webkit-scrollbar-track, .scrollable::-webkit-scrollbar-track { background: #f1f5f9; }
-        textarea::-webkit-scrollbar-thumb, .scrollable::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .dark textarea::-webkit-scrollbar-track, .dark .scrollable::-webkit-scrollbar-track { background: #1e293b; }
-        .dark .scrollable::-webkit-scrollbar-thumb { background: #475569; }
         :root {
             --glow-cyan: #00ffff;
             --glow-magenta: #ff00ff;
@@ -116,12 +107,6 @@
         @keyframes panelFloat { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
         .main-panel::before { content: ''; position: absolute; top: -1px; left: -1px; right: -1px; bottom: -1px; background: linear-gradient(45deg, var(--glow-cyan), var(--glow-magenta)); border-radius: 20px; z-index: -1; animation: borderGlow 3s linear infinite; opacity: 0.5; }
         @keyframes borderGlow { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
-        
-        /* Styling Tab Aktif */
-        .tab-btn[disabled] { color: #9ca3af; cursor: not-allowed; }
-        .dark .tab-btn[disabled] { color: #6b7280; }
-        .tab-active { border-bottom-color: #3b82f6; color: #3b82f6; font-weight: 600; }
-        .dark .tab-active { border-bottom-color: #60a5fa; color: #60a5fa; }
         /* General UI Elements */
         textarea, select, input[type="text"], input[type="email"], input[type="password"] {
             width: 100%;
@@ -142,10 +127,6 @@
         }
         textarea::placeholder { color: rgba(0, 255, 255, 0.5); font-style: italic; }
         select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 15px center; background-size: 20px; padding-right: 45px; cursor: pointer; }
-        
-        /* Modal Visibility */
-        .modal { display: none; transition: opacity 0.3s ease; }
-        .modal.flex { display: flex; }
         /* Buttons */
         button, .action-btn {
             background: linear-gradient(45deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
@@ -179,19 +160,6 @@
             background: rgba(0, 255, 0, 0.3);
             box-shadow: 0 0 25px rgba(0, 255, 0, 0.4);
         }
-        
-        /* Progress Bar & Tombol Simpan */
-        #ocr-progress-bar { width: 0%; transition: width 0.3s; }
-        .save-btn-icon { fill: none; stroke: currentColor; }
-        .saved .save-btn-icon { fill: currentColor; stroke: currentColor; }
-        
-        /* Pratinjau Gambar & Drop Zone */
-        #image-viewport { cursor: grab; overflow: hidden; border-radius: 0.5rem; position: relative; }
-        #image-viewport:active { cursor: grabbing; }
-        #image-transformer { transition: transform 0.1s ease-out; }
-        #image-preview-container { position: relative; }
-        #image-preview-container canvas { max-width: 100%; height: auto; display: block; }
-        #translated-canvas { position: absolute; top: 0; left: 0; }
         /* Header specific */
         .header-controls { display: flex; align-items: center; gap: 1rem; }
         .header-controls button { padding: 8px; background: transparent; border: 1px solid transparent; }
@@ -200,18 +168,6 @@
         #user-info { color: #fff; }
         #user-email { color: var(--glow-cyan); }
         #logout-btn { color: var(--glow-magenta); border: 1px solid var(--glow-magenta); }
-
-        .drop-zone { border: 2px dashed #d1d5db; transition: background-color 0.2s, border-color 0.2s; }
-        .dark .drop-zone { border-color: #4b5563; }
-        .dragover { background-color: #e0f2fe; border-color: #3b82f6; }
-        .dark .dragover { background-color: #1e3a8a; border-color: #60a5fa; }
-        
-        /* Kamus & Toggle Switch */
-        .dict-word { cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-decoration-color: #3b82f6; }
-        .toggle-label { transition: background-color 0.2s ease-in; }
-        .toggle-label .dot { transition: transform 0.2s ease-in; }
-        input.toggle-checkbox:checked + .toggle-label { background-color: #3b82f6; }
-        input.toggle-checkbox:checked + .toggle-label .dot { transform: translateX(100%); }
         /* Tabs */
         .tabs-container { display: flex; overflow-x: auto; border-bottom: 1px solid rgba(0, 255, 255, 0.3); margin-bottom: 20px; padding-bottom: 5px; }
         .tab-btn {
@@ -230,21 +186,6 @@
         .tab-active { color: var(--glow-cyan); border-bottom-color: var(--glow-cyan); font-weight: bold; text-shadow: 0 0 10px var(--glow-cyan); }
         .tab-panel { animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Loader/Spinner untuk Tombol AI */
-        /* Text Translation Panel */
-        #text-panel-content {
-            background: rgba(0, 20, 40, 0.2);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            border-radius: 12px;
-        }
-        #source-text, #translated-output, #romanization-output, #alternative-translations { font-size: 1.1rem; line-height: 1.6; }
-        #translated-output { color: var(--glow-green); }
-        .dict-word { cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-decoration-color: var(--glow-cyan); }
-        #swap-btn { background: transparent; border: none; }
-        #swap-btn svg { color: var(--glow-cyan); transition: transform 0.3s ease; }
-        #swap-btn:hover svg { transform: rotate(180deg) scale(1.1); color: var(--glow-magenta); }
-
         /* Modals */
         .modal { display: none; transition: opacity 0.3s ease; backdrop-filter: blur(10px); }
         .modal.flex { display: flex; }
@@ -259,7 +200,6 @@
         .modal-header h3 { font-family: 'Orbitron', monospace; color: var(--glow-cyan); }
         .close-modal-btn { color: rgba(255,255,255,0.7); transition: all 0.2s; }
         .close-modal-btn:hover { color: var(--glow-magenta); transform: scale(1.2) rotate(90deg); }
-
         /* Drop Zones */
         .drop-zone {
             border: 2px dashed rgba(0, 255, 255, 0.4);
@@ -271,7 +211,6 @@
             border-color: var(--glow-cyan);
             box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.2);
         }
-
         /* Loader */
         .loader {
             width: 18px; height: 18px; border: 2px solid #FFF;
@@ -281,60 +220,12 @@
             display: inline-block; box-sizing: border-box;
             animation: rotation 1s linear infinite;
         }
-        .ai-action-btn .loader, #target-speak-btn .loader, #check-grammar-btn .loader {
-             border-color: #3b82f6; border-bottom-color: transparent;
-        }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        /* Tombol Rekam Suara (Mode Percakapan) */
-        .mic-btn.recording { animation: pulse 1.5s infinite; background-color: #ef4444; }
-        .mic-btn.recording:hover { background-color: #dc2626; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
-        .mic-btn.recording.pulse-red { animation-name: pulse-red; }
-        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-        
-        /* Opsi Terjemahan Alternatif */
-        .alternative-translation { cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: background-color 0.2s; }
-        .alternative-translation:hover { background-color: #eef2ff; }
-        .dark .alternative-translation:hover { background-color: #374151; }
-        #alternative-translations { max-height: 80px; }
-        
-        /* Gaya untuk Teks Prediktif */
-        #predictive-text { cursor: pointer; transition: color 0.2s; }
-
-        /* Gaya untuk Perbandingan Teks Koreksi */
-        #correction-diff del { background-color: #fecaca; text-decoration: line-through; }
-        #correction-diff ins { background-color: #bbf7d0; text-decoration: none; }
-        .dark #correction-diff del { background-color: #450a0a; }
-        .dark #correction-diff ins { background-color: #14532d; }
         /* Scrollbar */
         .scrollable::-webkit-scrollbar { width: 8px; }
         .scrollable::-webkit-scrollbar-track { background: rgba(0, 30, 60, 0.2); }
         .scrollable::-webkit-scrollbar-thumb { background: rgba(0, 255, 255, 0.4); border-radius: 10px; }
         .scrollable::-webkit-scrollbar-thumb:hover { background: var(--glow-cyan); }
-
-        /* Gaya untuk Gamifikasi */
-        .badge { opacity: 0.3; filter: grayscale(1); transition: all 0.3s ease; }
-        .badge.earned { opacity: 1; filter: grayscale(0); }
-        /* Specific Component Styles */
-        #image-viewport { border: 1px solid rgba(0, 255, 255, 0.2); background: rgba(0,0,0,0.2); }
-        #image-controls { background: rgba(0, 20, 40, 0.3); border-radius: 8px; padding: 8px; }
-        #conversation-view { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 10px; }
-        .mic-btn { border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; }
-        .mic-btn.recording { animation: micPulse 1.5s infinite; border-color: var(--glow-magenta); }
-        @keyframes micPulse { 0% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(255, 0, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0); } }
-        #bottom-buttons button { background: transparent; border: none; }
-        #bottom-buttons svg { width: 32px; height: 32px; color: rgba(0, 255, 255, 0.7); transition: all 0.3s; }
-        #bottom-buttons span { color: rgba(255,255,255,0.8); transition: all 0.3s; }
-        #bottom-buttons button:hover svg { color: var(--glow-cyan); transform: scale(1.1); filter: drop-shadow(0 0 8px var(--glow-cyan)); }
-        #bottom-buttons button:hover span { color: #fff; text-shadow: 0 0 5px var(--glow-cyan); }
-
-        /* Gaya untuk Kuis */
-        .quiz-option { transition: background-color 0.2s; }
-        .quiz-option.correct { background-color: #bbf7d0; }
-        .dark .quiz-option.correct { background-color: #166534; }
-        .quiz-option.incorrect { background-color: #fecaca; }
-        .dark .quiz-option.incorrect { background-color: #991b1b; }
         /* Remove Tailwind's default body styles */
         body {
             background-color: transparent !important;
@@ -342,10 +233,6 @@
         }
 
         /* Gaya untuk Tombol Feedback */
-        .feedback-btn svg { transition: transform 0.2s ease-in-out; }
-        .feedback-btn:hover svg { transform: scale(1.2); }
-        .feedback-btn.selected { color: #3b82f6; }
-        .dark .feedback-btn.selected { color: #60a5fa; }
         /* Override Tailwind for specific elements */
         .bg-white { background-color: transparent !important; }
         .dark\:bg-gray-800 { background-color: transparent !important; }
@@ -356,12 +243,6 @@
         .border-slate-200 { border-color: rgba(0, 255, 255, 0.2) !important; }
         .dark\:border-gray-700 { border-color: rgba(0, 255, 255, 0.3) !important; }
         .shadow-sm { box-shadow: none !important; }
-
-        /* Gaya untuk Kamera */
-        #camera-feed {
-            transform: scaleX(-1); /* Cerminkan video agar seperti cermin */
-        /* Hide original header and footer, we use the new ones */
-        #original-header, #original-footer { display: none; }
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -1108,7 +989,6 @@
         const cancelSuggestionBtn = document.getElementById('cancel-suggestion-btn');
         // Elemen Fitur Baru: Kamera
         const cameraFeed = document.getElementById('camera-feed');
-        const cameraCanvas = document.getElementById('camera-canvas');
         const captureBtn = document.getElementById('capture-btn');
         const cameraOcrStatus = document.getElementById('camera-ocr-status');
         const cameraPermissionPrompt = document.getElementById('camera-permission-prompt');
@@ -1119,7 +999,6 @@
         const goOfflineBtn = document.getElementById('go-offline-btn');
         const partnerList = document.getElementById('partner-list');
         // Elemen untuk Kelola Pembaruan
-        const updateSummaryContainer = document.getElementById('update-summary-container');
         const manageUpdatesBtn = document.getElementById('manage-updates-btn');
         const manageUpdatesModal = document.getElementById('manage-updates-modal');
         const updateVersionInput = document.getElementById('update-version');
@@ -1131,6 +1010,8 @@
         const adminManageUpdatesBtn = document.getElementById('admin-manage-updates-btn');
         const userListContainer = document.getElementById('user-list-container');
 
+        // Canvas untuk kamera disembunyikan dan dibuat saat dibutuhkan
+        const cameraCanvas = document.createElement('canvas');
 
         // --- 2. STATE & CONSTANTS ---
         const languages = { "auto": "Deteksi Otomatis", "af": "Afrikaans", "sq": "Albanian", "am": "Amharic", "ar": "Arabic", "hy": "Armenian", "az": "Azerbaijani", "eu": "Basque", "be": "Belarusian", "bn": "Bengali", "bs": "Bosnian", "bg": "Bulgarian", "ca": "Catalan", "ceb": "Cebuano", "ny": "Chichewa", "zh-CN": "Chinese (Simplified)", "zh-TW": "Chinese (Traditional)", "co": "Corsican", "hr": "Croatian", "cs": "Czech", "da": "Danish", "nl": "Dutch", "en": "English", "eo": "Esperanto", "et": "Estonian", "tl": "Filipino", "fi": "Finnish", "fr": "French", "fy": "Frisian", "gl": "Galician", "ka": "Georgian", "de": "German", "el": "Greek", "gu": "Gujarati", "ht": "Haitian Creole", "ha": "Hausa", "haw": "Hawaiian", "iw": "Hebrew", "hi": "Hindi", "hmn": "Hmong", "hu": "Hungarian", "is": "Icelandic", "ig": "Igbo", "id": "Indonesian", "ga": "Irish", "it": "Italian", "ja": "Japanese", "jw": "Javanese", "kn": "Kannada", "kk": "Kazakh", "km": "Khmer", "ko": "Korean", "ku": "Kurdish (Kurmanji)", "ky": "Kyrgyz", "lo": "Lao", "la": "Latin", "lv": "Latvian", "lt": "Lithuanian", "lb": "Luxembourgish", "mk": "Macedonian", "mg": "Malagasy", "ms": "Malay", "ml": "Malayalam", "mt": "Maltese", "mi": "Maori", "mr": "Marathi", "mn": "Mongolian", "my": "Myanmar (Burmese)", "ne": "Nepali", "no": "Norwegian", "ps": "Pashto", "fa": "Persian", "pl": "Polish", "pt": "Portuguese", "pa": "Punjabi", "ro": "Romanian", "ru": "Russian", "sm": "Samoan", "gd": "Scots Gaelic", "sr": "Serbian", "st": "Sesotho", "sn": "Shona", "sd": "Sindhi", "si": "Sinhala", "sk": "Slovak", "sl": "Slovenian", "so": "Somali", "es": "Spanish", "su": "Sundanese", "sw": "Swahili", "sv": "Swedish", "tg": "Tajik", "ta": "Tamil", "te": "Telugu", "th": "Thai", "tr": "Turkish", "uk": "Ukrainian", "ur": "Urdu", "uz": "Uzbek", "vi": "Vietnamese", "cy": "Welsh", "xh": "Xhosa", "yi": "Yiddish", "yo": "Yoruba", "zu": "Zulu" };
@@ -1723,33 +1604,6 @@
         }
 
         // --- FUNGSI UNTUK KELOLA PEMBARUAN ---
-        function fetchUpdateSummary() {
-            const { db, doc, onSnapshot } = window.firebaseServices;
-            const updateDocRef = doc(db, "app_updates", "latest");
-            
-            onSnapshot(updateDocRef, (docSnap) => {
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    renderUpdateSummary(data.version, data.updates);
-                } else {
-                    renderUpdateSummary("Tidak ada info versi", ["Silakan tambahkan pembaruan dari tombol 'Kelola Pembaruan'."]);
-                }
-            });
-        }
-
-        function renderUpdateSummary(version, updates) {
-            const htmlUpdates = updates.map(item => `<li>${item}</li>`).join('');
-            updateSummaryContainer.innerHTML = `
-                <p>Versi ${version}</p>
-                <details class="mt-2 cursor-pointer max-w-lg mx-auto">
-                    <summary class="font-semibold hover:text-blue-500">Ringkasan Pembaruan</summary>
-                    <ul class="text-left mt-2 list-disc list-inside space-y-1 bg-slate-200 dark:bg-gray-800 p-3 rounded-lg">
-                        ${htmlUpdates}
-                    </ul>
-                </details>
-            `;
-        }
-
         async function saveUpdateSummary() {
             const { db, doc, setDoc } = window.firebaseServices;
             const version = updateVersionInput.value.trim();
@@ -2023,7 +1877,6 @@
         speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices(); };
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
         handleImageTranslation('[https://placehold.co/800x400/e2e8f0/64748b?text=Pilih+Gambar+Anda](https://placehold.co/800x400/e2e8f0/64748b?text=Pilih+Gambar+Anda)');
-        fetchUpdateSummary();
 
         // --- Event Listeners ---
         sourceTextEl.addEventListener('input', () => { clearTimeout(debounceTimer); debounceTimer = setTimeout(handleTextTranslation, 500); charCountEl.textContent = `${sourceTextEl.value.length} / 5.000`; clearTimeout(predictiveDebounceTimer); predictiveDebounceTimer = setTimeout(fetchPredictiveText, 500); });
