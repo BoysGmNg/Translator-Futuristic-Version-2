@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Penerjemah Hoshi (Ditingkatkan)</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts Futuristik -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;800&display=swap" rel="stylesheet">
     <!-- Tesseract.js untuk OCR pada gambar -->
     <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
     
@@ -74,22 +76,121 @@
     </script>
     <style>
         body { font-family: 'Inter', sans-serif; }
+        /* --- DESAIN FUTURISTIK BARU --- */
+        body { 
+            font-family: 'Exo 2', sans-serif; 
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 25%, #000814 50%, #001122 75%, #000000 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        .dark { /* Paksa tema gelap */
+            color-scheme: dark;
+        }
+        .dark body {
+             background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 25%, #000814 50%, #001122 75%, #000000 100%);
+        }
+
+        /* Animated Backgrounds */
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .particle { position: absolute; width: 2px; height: 2px; background: radial-gradient(circle, #00ffff, transparent); border-radius: 50%; animation: float 6s infinite ease-in-out; box-shadow: 0 0 6px #00ffff; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 50% { transform: translateY(-100px); opacity: 0.8; } }
+        
+        .holographic-grid { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px); background-size: 50px 50px; animation: gridPulse 4s ease-in-out infinite; z-index: 1; }
+        @keyframes gridPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
+
+        .neural-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+        .neural-node { position: absolute; width: 4px; height: 4px; background: radial-gradient(circle, #ff00ff, transparent); border-radius: 50%; box-shadow: 0 0 10px #ff00ff; animation: pulse 3s ease-in-out infinite; }
+        .neural-connection { position: absolute; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 0, 255, 0.5), transparent); animation: dataFlow 2s linear infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 10px #ff00ff; } 50% { transform: scale(1.5); box-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff; } }
+        @keyframes dataFlow { 0% { opacity: 0; transform: scaleX(0); } 50% { opacity: 1; transform: scaleX(1); } 100% { opacity: 0; transform: scaleX(0); } }
+
+        /* Main Container & Header */
+        .container { position: relative; z-index: 10; max-width: 1200px; margin: 0 auto; padding: 40px 20px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .header { text-align: center; margin-bottom: 40px; position: relative; }
+        .title { font-family: 'Orbitron', monospace; font-size: 3rem; font-weight: 900; background: linear-gradient(45deg, #00ffff, #ff00ff, #00ff00, #ffff00); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: holographicText 3s ease-in-out infinite; text-shadow: 0 0 30px rgba(0, 255, 255, 0.5); }
+        @keyframes holographicText { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+        /* Main Panel Styling */
+        .main-panel { background: rgba(0, 20, 40, 0.2); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(0, 255, 255, 0.3); border-radius: 20px; padding: 20px; width: 100%; box-shadow: 0 8px 32px rgba(0, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1); }
+        .sub-panel { background: rgba(0, 30, 60, 0.2); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 12px; padding: 15px; }
+
+        /* Form Elements */
+        textarea, select, input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            background: rgba(0, 30, 60, 0.3);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            border-radius: 8px;
+            padding: 10px 15px;
+            color: #ffffff;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        textarea:focus, select:focus, input:focus { outline: none; border-color: #00ffff; box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), inset 0 0 10px rgba(0, 255, 255, 0.1); }
+        textarea::placeholder { color: rgba(0, 255, 255, 0.5); font-style: italic; }
+        select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 15px center; background-size: 20px; cursor: pointer; }
+        select:hover { border-color: #ff00ff; }
+
+        /* Buttons */
+        button { transition: all 0.3s ease; }
+        .h-btn { background: linear-gradient(45deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2)); border: 1px solid #00ffff; color: #fff; border-radius: 8px; padding: 8px 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
+        .h-btn:hover { border-color: #ff00ff; box-shadow: 0 0 25px rgba(0, 255, 255, 0.4), 0 0 15px rgba(255, 0, 255, 0.2); transform: translateY(-2px); }
+        .h-btn-primary { border-color: #00ff00; background: linear-gradient(45deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 255, 0.2)); }
+        .h-btn-primary:hover { border-color: #00ff00; box-shadow: 0 0 25px rgba(0, 255, 0, 0.4); }
+
         /* Custom Scrollbar */
         textarea::-webkit-scrollbar, .scrollable::-webkit-scrollbar { width: 8px; }
         textarea::-webkit-scrollbar-track, .scrollable::-webkit-scrollbar-track { background: #f1f5f9; }
         textarea::-webkit-scrollbar-thumb, .scrollable::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .dark textarea::-webkit-scrollbar-track, .dark .scrollable::-webkit-scrollbar-track { background: #1e293b; }
         .dark .scrollable::-webkit-scrollbar-thumb { background: #475569; }
+        textarea::-webkit-scrollbar, .scrollable::-webkit-scrollbar { width: 6px; }
+        textarea::-webkit-scrollbar-track, .scrollable::-webkit-scrollbar-track { background: rgba(0, 30, 60, 0.3); }
+        textarea::-webkit-scrollbar-thumb, .scrollable::-webkit-scrollbar-thumb { background: rgba(0, 255, 255, 0.4); border-radius: 10px; }
+        textarea::-webkit-scrollbar-thumb:hover, .scrollable::-webkit-scrollbar-thumb:hover { background: rgba(0, 255, 255, 0.7); }
         
         /* Styling Tab Aktif */
         .tab-btn[disabled] { color: #9ca3af; cursor: not-allowed; }
         .dark .tab-btn[disabled] { color: #6b7280; }
         .tab-active { border-bottom-color: #3b82f6; color: #3b82f6; font-weight: 600; }
         .dark .tab-active { border-bottom-color: #60a5fa; color: #60a5fa; }
+        .tab-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            border-bottom: 2px solid rgba(0, 255, 255, 0.2);
+            color: rgba(0, 255, 255, 0.6);
+            padding: 10px 16px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .tab-btn:hover {
+            background: rgba(0, 255, 255, 0.1);
+            color: #00ffff;
+        }
+        .tab-active {
+            color: #00ffff;
+            border-bottom-color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        .tab-btn[disabled] { color: rgba(255,255,255,0.3); cursor: not-allowed; }
         
         /* Modal Visibility */
         .modal { display: none; transition: opacity 0.3s ease; }
+        .modal { 
+            display: none; 
+            transition: opacity 0.3s ease; 
+            background: rgba(0, 20, 40, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
         .modal.flex { display: flex; }
+        .modal-content {
+            background: rgba(0, 20, 40, 0.4);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.1);
+        }
         
         /* Progress Bar & Tombol Simpan */
         #ocr-progress-bar { width: 0%; transition: width 0.3s; }
@@ -108,6 +209,9 @@
         .dark .drop-zone { border-color: #4b5563; }
         .dragover { background-color: #e0f2fe; border-color: #3b82f6; }
         .dark .dragover { background-color: #1e3a8a; border-color: #60a5fa; }
+        /* Drop Zone */
+        .drop-zone { border: 2px dashed rgba(0, 255, 255, 0.4); transition: all 0.2s; }
+        .dragover { background-color: rgba(0, 255, 255, 0.1); border-color: #00ffff; }
         
         /* Kamus & Toggle Switch */
         .dict-word { cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-decoration-color: #3b82f6; }
@@ -115,6 +219,11 @@
         .toggle-label .dot { transition: transform 0.2s ease-in; }
         input.toggle-checkbox:checked + .toggle-label { background-color: #3b82f6; }
         input.toggle-checkbox:checked + .toggle-label .dot { transform: translateX(100%); }
+        .dict-word { cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-decoration-color: #00ffff; }
+        .toggle-label { transition: background-color 0.2s ease-in; background-color: rgba(255,255,255,0.2); }
+        .toggle-label .dot { transition: transform 0.2s ease-in; background-color: #fff; }
+        input.toggle-checkbox:checked + .toggle-label { background-color: #00ffff; }
+        input.toggle-checkbox:checked + .toggle-label .dot { transform: translateX(100%); background-color: #001122; }
 
         /* Loader/Spinner untuk Tombol AI */
         .loader {
@@ -125,6 +234,7 @@
         }
         .ai-action-btn .loader, #target-speak-btn .loader, #check-grammar-btn .loader {
              border-color: #3b82f6; border-bottom-color: transparent;
+             border-color: #00ffff; border-bottom-color: transparent;
         }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
@@ -134,11 +244,17 @@
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
         .mic-btn.recording.pulse-red { animation-name: pulse-red; }
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        .mic-btn { background: #00ffff; color: #001122; }
+        .mic-btn:hover { background: #80ffff; }
+        .mic-btn.recording { animation: pulse-mic 1.5s infinite; background-color: #ff00ff; }
+        .mic-btn.recording:hover { background-color: #ff80ff; }
+        @keyframes pulse-mic { 0% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 0, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0); } }
         
         /* Opsi Terjemahan Alternatif */
         .alternative-translation { cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: background-color 0.2s; }
         .alternative-translation:hover { background-color: #eef2ff; }
         .dark .alternative-translation:hover { background-color: #374151; }
+        .alternative-translation:hover { background-color: rgba(0, 255, 255, 0.1); }
         #alternative-translations { max-height: 80px; }
         
         /* Gaya untuk Teks Prediktif */
@@ -149,6 +265,8 @@
         #correction-diff ins { background-color: #bbf7d0; text-decoration: none; }
         .dark #correction-diff del { background-color: #450a0a; }
         .dark #correction-diff ins { background-color: #14532d; }
+        #correction-diff del { background-color: rgba(255, 0, 102, 0.3); text-decoration: line-through; }
+        #correction-diff ins { background-color: rgba(0, 255, 0, 0.3); text-decoration: none; }
 
         /* Gaya untuk Gamifikasi */
         .badge { opacity: 0.3; filter: grayscale(1); transition: all 0.3s ease; }
@@ -160,60 +278,99 @@
         .dark .quiz-option.correct { background-color: #166534; }
         .quiz-option.incorrect { background-color: #fecaca; }
         .dark .quiz-option.incorrect { background-color: #991b1b; }
+        .quiz-option { transition: background-color 0.2s; border-color: rgba(0, 255, 255, 0.4); }
+        .quiz-option:hover { background-color: rgba(0, 255, 255, 0.1); }
+        .quiz-option.correct { background-color: rgba(0, 255, 0, 0.3); border-color: #00ff00; }
+        .quiz-option.incorrect { background-color: rgba(255, 0, 102, 0.3); border-color: #ff0066; }
 
         /* Gaya untuk Tombol Feedback */
         .feedback-btn svg { transition: transform 0.2s ease-in-out; }
         .feedback-btn:hover svg { transform: scale(1.2); }
         .feedback-btn.selected { color: #3b82f6; }
         .dark .feedback-btn.selected { color: #60a5fa; }
+        .feedback-btn.selected { color: #00ffff; }
 
         /* Gaya untuk Kamera */
         #camera-feed {
             transform: scaleX(-1); /* Cerminkan video agar seperti cermin */
         }
+        #camera-feed { transform: scaleX(-1); }
+
+        /* Pratinjau Gambar */
+        #image-viewport { cursor: grab; overflow: hidden; border-radius: 0.5rem; position: relative; }
+        #image-viewport:active { cursor: grabbing; }
+        #image-transformer { transition: transform 0.1s ease-out; }
+        #image-preview-container { position: relative; }
+        #image-preview-container canvas { max-width: 100%; height: auto; display: block; }
+        #translated-canvas { position: absolute; top: 0; left: 0; }
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-gray-900 text-slate-800 dark:text-slate-200 transition-colors duration-300">
+<body class="dark">
 
     <div class="w-full min-h-screen flex flex-col">
+    <!-- Animated Background Elements -->
+    <div class="particles" id="particles"></div>
+    <div class="holographic-grid"></div>
+    <div class="neural-bg" id="neuralBg"></div>
+
+    <div class="container w-full min-h-screen flex flex-col">
         <!-- Header -->
         <header class="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-slate-200 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-800 sticky top-0 z-30">
             <h1 class="text-xl font-bold text-slate-800 dark:text-slate-100">Penerjemah Hoshi ⭐</h1>
             <div class="flex items-center gap-2 sm:gap-4">
+        <header class="header w-full flex flex-wrap items-center justify-between gap-4 p-4 sticky top-0 z-30" style="background: rgba(0, 8, 20, 0.5); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 255, 255, 0.2);">
+            <h1 class="title text-2xl">HOSHI NEURAL TRANSLATOR</h1>
+            <div class="flex items-center gap-1 sm:gap-2">
                 <!-- Kontainer Otentikasi -->
                 <div id="auth-container" class="flex items-center gap-2">
                     <button id="login-btn" class="text-sm font-semibold text-blue-600 hover:underline">Login</button>
                     <button id="register-btn" class="text-sm font-semibold bg-blue-600 text-white py-1.5 px-3 rounded-md hover:bg-blue-700 transition-transform hover:scale-105">Daftar</button>
+                    <button id="login-btn" class="text-sm font-semibold text-cyan-400 hover:text-cyan-200">Login</button>
+                    <button id="register-btn" class="h-btn h-btn-primary text-sm py-1.5 px-3">Daftar</button>
                 </div>
                 <div id="user-info" class="hidden items-center gap-2">
                     <span id="user-email" class="text-sm font-medium text-slate-600 dark:text-slate-300 truncate max-w-[100px] sm:max-w-xs"></span>
                     <div class="flex items-center gap-1 text-sm font-semibold text-amber-500">
+                    <span id="user-email" class="text-sm font-medium text-slate-300 truncate max-w-[100px] sm:max-w-xs"></span>
+                    <div class="flex items-center gap-1 text-sm font-semibold text-yellow-400">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clip-rule="evenodd" /></svg>
                         <span id="user-points">0</span>
                     </div>
                     <button id="profile-btn" class="hidden sm:inline text-sm font-semibold text-slate-600 dark:text-slate-300 hover:underline">Profil</button>
                     <button id="logout-btn" class="text-sm font-semibold text-red-500 hover:underline flex-shrink-0">Logout</button>
+                    <button id="profile-btn" class="hidden sm:inline text-sm font-semibold text-slate-300 hover:text-cyan-400">Profil</button>
+                    <button id="logout-btn" class="text-sm font-semibold text-pink-500 hover:text-pink-400 flex-shrink-0">Logout</button>
                 </div>
 
                 <div class="h-6 w-px bg-slate-200 dark:bg-gray-700"></div>
+                <div class="h-6 w-px bg-cyan-400/30"></div>
                 
                 <button id="word-of-the-day-btn" aria-label="Kata Hari Ini" title="Kata Hari Ini" class="text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors">
+                <button id="word-of-the-day-btn" aria-label="Kata Hari Ini" title="Kata Hari Ini" class="text-slate-400 hover:bg-cyan-400/10 hover:text-cyan-300 rounded-lg p-2 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
                 </button>
                 <button id="api-key-btn" aria-label="Kunci API" title="Kelola Kunci API Gemini" class="text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors">
+                <button id="api-key-btn" aria-label="Kunci API" title="Kelola Kunci API Gemini" class="text-slate-400 hover:bg-cyan-400/10 hover:text-cyan-300 rounded-lg p-2 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v-2l1-1 1-1 .257-.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd" /></svg>
                 </button>
                 <button id="settings-btn" aria-label="Pengaturan" class="text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors">
+                <button id="settings-btn" aria-label="Pengaturan" class="text-slate-400 hover:bg-cyan-400/10 hover:text-cyan-300 rounded-lg p-2 transition-colors">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.405 1.05c.412-1.363 2.387-1.363 2.799 0l.34 1.125a1.5 1.5 0 001.482 1.05h1.181c1.423 0 2.013 1.795.898 2.65l-.948.69a1.5 1.5 0 00-.573 1.752l.34 1.125c.412 1.363-.93 2.65-2.235 1.752l-.948-.69a1.5 1.5 0 00-1.752 0l-.948.69c-1.305.9-2.647-.39-2.235-1.752l.34-1.125a1.5 1.5 0 00-.573-1.752l-.948-.69c-1.115-.855-.525-2.65.898-2.65h1.181a1.5 1.5 0 001.482-1.05l.34-1.125zM10 6a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/></svg>
                 </button>
                 <div class="relative">
                     <button id="theme-menu-button" aria-label="Menu Tema" class="text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors">
+                    <button id="theme-menu-button" aria-label="Menu Tema" class="text-slate-400 hover:bg-cyan-400/10 hover:text-cyan-300 rounded-lg p-2 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg>
                     </button>
                     <div id="theme-menu" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-20 border border-slate-200 dark:border-gray-700">
                         <a href="#" class="block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-gray-700" data-theme="light">Terang</a>
                         <a href="#" class="block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-gray-700" data-theme="dark">Gelap</a>
                         <a href="#" class="block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-gray-700" data-theme="system">Ikuti Sistem</a>
+                    <div id="theme-menu" class="hidden absolute right-0 mt-2 w-48 modal-content z-20">
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-cyan-400/10" data-theme="light">Terang</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-cyan-400/10" data-theme="dark">Gelap</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-cyan-400/10" data-theme="system">Ikuti Sistem</a>
                     </div>
                 </div>
             </div>
@@ -223,11 +380,16 @@
         <main class="flex-grow flex flex-col items-center p-2 sm:p-4 md:p-6 lg:p-8">
             <div id="login-prompt" class="w-full max-w-5xl text-center">
                 <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
+            <div id="login-prompt" class="w-full max-w-4xl text-center">
+                <div class="main-panel p-8">
                     <h2 class="text-2xl font-bold mb-4">Selamat Datang di Penerjemah Hoshi</h2>
                     <p class="text-slate-600 dark:text-slate-300 mb-6">Silakan login atau daftar akun untuk mengakses semua fitur canggih kami.</p>
+                    <p class="text-slate-300 mb-6">Silakan login atau daftar akun untuk mengakses semua fitur canggih kami.</p>
                     <div class="flex justify-center gap-4">
                         <button id="login-prompt-btn" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700">Login</button>
                         <button id="register-prompt-btn" class="bg-slate-200 dark:bg-gray-700 font-semibold py-2 px-6 rounded-lg hover:bg-slate-300 dark:hover:bg-gray-600">Daftar</button>
+                        <button id="login-prompt-btn" class="h-btn h-btn-primary">Login</button>
+                        <button id="register-prompt-btn" class="h-btn">Daftar</button>
                     </div>
                 </div>
             </div>
@@ -240,16 +402,29 @@
                         <button class="tab-btn flex-shrink-0 flex items-center gap-2 py-3 px-4 text-sm text-slate-500 dark:text-slate-400 border-b-2 border-transparent transition-colors" data-tab="image">Gambar</button>
                         <button class="tab-btn flex-shrink-0 flex items-center gap-2 py-3 px-4 text-sm text-slate-500 dark:text-slate-400 border-b-2 border-transparent transition-colors" data-tab="document">Dokumen</button>
                         <button class="tab-btn flex-shrink-0 flex items-center gap-2 py-3 px-4 text-sm text-slate-500 dark:text-slate-400 border-b-2 border-transparent transition-colors" data-tab="subtitle">Subtitle</button>
+                        <button class="tab-btn tab-active flex-shrink-0" data-tab="text">Teks</button>
+                        <button class="tab-btn flex-shrink-0" data-tab="voice">Percakapan</button>
+                        <button class="tab-btn flex-shrink-0" data-tab="image">Gambar</button>
+                        <button class="tab-btn flex-shrink-0" data-tab="document">Dokumen</button>
+                        <button class="tab-btn flex-shrink-0" data-tab="subtitle">Subtitle</button>
                         <!-- Tabs Premium -->
                         <button class="tab-btn flex-shrink-0 flex items-center gap-2 py-3 px-4 text-sm text-slate-500 dark:text-slate-400 border-b-2 border-transparent transition-colors" data-tab="audio">Audio 🎵💎</button>
                         <button id="ai-tab-btn" class="tab-btn flex-shrink-0 flex items-center gap-2 py-3 px-4 text-sm text-slate-500 dark:text-slate-400 border-b-2 border-transparent transition-colors" data-tab="ai">Asisten AI 💎</button>
                         <button class="tab-btn flex-shrink-0 flex items-center gap-2 py-3 px-4 text-sm text-slate-500 dark:text-slate-400 border-b-2 border-transparent transition-colors" data-tab="lyrics">Lirik Lagu 💎</button>
                         <button class="tab-btn flex-shrink-0 flex items-center gap-2 py-3 px-4 text-sm text-slate-500 dark:text-slate-400 border-b-2 border-transparent transition-colors" data-tab="code">Kode 💎</button>
                         <button class="tab-btn flex-shrink-0 flex items-center gap-2 py-3 px-4 text-sm text-slate-500 dark:text-slate-400 border-b-2 border-transparent transition-colors" data-tab="quiz">Kuis Bahasa 💎</button>
+                        <button class="tab-btn flex-shrink-0" data-tab="audio">Audio 🎵💎</button>
+                        <button id="ai-tab-btn" class="tab-btn flex-shrink-0" data-tab="ai">Asisten AI 💎</button>
+                        <button class="tab-btn flex-shrink-0" data-tab="lyrics">Lirik Lagu 💎</button>
+                        <button class="tab-btn flex-shrink-0" data-tab="code">Kode 💎</button>
+                        <button class="tab-btn flex-shrink-0" data-tab="quiz">Kuis Bahasa 💎</button>
                         <!-- FITUR BARU: Diaktifkan -->
                         <button class="tab-btn flex-shrink-0 flex items-center gap-2 py-3 px-4 text-sm text-slate-500 dark:text-slate-400 border-b-2 border-transparent transition-colors" data-tab="camera">Kamera 📸</button>
                         <button class="tab-btn flex-shrink-0 flex items-center gap-2 py-3 px-4 text-sm text-slate-500 dark:text-slate-400 border-b-2 border-transparent transition-colors" data-tab="partner">Language Partner 🤝</button>
                         <button id="admin-tab-btn" class="tab-btn flex-shrink-0 flex items-center gap-2 py-3 px-4 text-sm text-red-500 border-b-2 border-transparent transition-colors hidden" data-tab="admin">Admin ⚙️</button>
+                        <button class="tab-btn flex-shrink-0" data-tab="camera">Kamera 📸</button>
+                        <button class="tab-btn flex-shrink-0" data-tab="partner">Language Partner 🤝</button>
+                        <button id="admin-tab-btn" class="tab-btn flex-shrink-0 !text-pink-500 hidden" data-tab="admin">Admin ⚙️</button>
                     </div>
                 </div>
 
@@ -259,12 +434,18 @@
                         <div class="flex flex-col sm:flex-row items-center justify-between p-3 sm:p-4 border-b border-slate-200 dark:border-gray-700 gap-2">
                              <select id="source-lang" class="w-full sm:w-auto bg-white dark:bg-gray-800 text-sm font-semibold focus:outline-none cursor-pointer"></select>
                              <button id="swap-btn" title="Tukar bahasa" class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-full transition-colors hover:rotate-180">
+                    <div class="main-panel">
+                        <div class="flex flex-col sm:flex-row items-center justify-between p-3 sm:p-4 border-b border-cyan-400/20 gap-2">
+                             <select id="source-lang" class="w-full sm:w-auto text-sm font-semibold cursor-pointer"></select>
+                             <button id="swap-btn" title="Tukar bahasa" class="p-2 text-cyan-400 hover:bg-cyan-400/10 rounded-full transition-colors hover:rotate-180">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
                              </button>
                              <select id="target-lang" class="w-full sm:w-auto bg-white dark:bg-gray-800 text-sm font-semibold focus:outline-none cursor-pointer"></select>
+                             <select id="target-lang" class="w-full sm:w-auto text-sm font-semibold cursor-pointer"></select>
                         </div>
                         <div class="grid md:grid-cols-2">
                             <div class="p-4 flex flex-col border-b md:border-b-0 md:border-r border-slate-200 dark:border-gray-700 min-h-[250px]">
+                            <div class="p-4 flex flex-col border-b md:border-b-0 md:border-r border-cyan-400/20 min-h-[250px]">
                                 <div class="relative flex-grow">
                                     <textarea id="source-text" class="w-full h-full bg-transparent resize-none focus:outline-none text-lg" placeholder="Masukkan teks..."></textarea>
                                     <div id="predictive-text-container" class="absolute top-0 left-0 w-full h-full text-lg pointer-events-none">
@@ -272,9 +453,12 @@
                                     </div>
                                 </div>
                                 <div class="flex justify-between items-center mt-2 pt-2 border-t border-slate-200 dark:border-gray-700">
+                                <div class="flex justify-between items-center mt-2 pt-2 border-t border-cyan-400/20">
                                     <div class="flex gap-2">
                                         <button id="source-speak-btn" aria-label="Dengarkan teks sumber" title="Dengarkan teks sumber" class="p-2 text-slate-400 hover:text-blue-500 transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M5.071 8.043a.75.75 0 01.275-.566l3.5-2.5a.75.75 0 011.154.566v10a.75.75 0 01-1.154.566l-3.5-2.5a.75.75 0 01-.275-.566H4.75a.75.75 0 010-1.5h.321z" /><path d="M11.75 6.12a.75.75 0 011.5 0v7.76a.75.75 0 01-1.5 0V6.12zM14.622 4.332a.75.75 0 011.06 0l.07.07a.75.75 0 010 1.06l-.07.07a5.5 5.5 0 010 7.778l.07.07a.75.75 0 010 1.06l-.07.07a.75.75 0 01-1.06 0l-.07-.07a7 7 0 010-9.9l.07-.07z" /></svg></button>
                                         <button id="check-grammar-btn" aria-label="Periksa Teks dengan AI" title="Periksa Teks dengan AI" class="p-2 text-slate-400 hover:text-blue-500 transition-colors flex items-center gap-1">
+                                        <button id="source-speak-btn" aria-label="Dengarkan teks sumber" title="Dengarkan teks sumber" class="p-2 text-slate-400 hover:text-cyan-400 transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M5.071 8.043a.75.75 0 01.275-.566l3.5-2.5a.75.75 0 011.154.566v10a.75.75 0 01-1.154.566l-3.5-2.5a.75.75 0 01-.275-.566H4.75a.75.75 0 010-1.5h.321z" /><path d="M11.75 6.12a.75.75 0 011.5 0v7.76a.75.75 0 01-1.5 0V6.12zM14.622 4.332a.75.75 0 011.06 0l.07.07a.75.75 0 010 1.06l-.07.07a5.5 5.5 0 010 7.778l.07.07a.75.75 0 010 1.06l-.07.07a.75.75 0 01-1.06 0l-.07-.07a7 7 0 010-9.9l.07-.07z" /></svg></button>
+                                        <button id="check-grammar-btn" aria-label="Periksa Teks dengan AI" title="Periksa Teks dengan AI" class="p-2 text-slate-400 hover:text-cyan-400 transition-colors flex items-center gap-1">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.052-.143z" clip-rule="evenodd" /></svg>
                                             <span class="text-xs font-bold">AI</span>
                                             <div class="loader hidden"></div>
@@ -286,38 +470,51 @@
                             <div class="p-4 relative flex flex-col min-h-[250px]">
                                  <div class="flex justify-end items-center mb-2">
                                     <label for="glossary-toggle" class="flex items-center cursor-pointer text-sm font-medium text-slate-600 dark:text-slate-300">
+                                    <label for="glossary-toggle" class="flex items-center cursor-pointer text-sm font-medium text-slate-300">
                                         Glosarium
                                         <div class="relative inline-block w-10 ml-2 align-middle select-none">
                                             <input type="checkbox" name="toggle" id="glossary-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
                                             <label for="glossary-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 dark:bg-gray-600 cursor-pointer"><span class="dot absolute left-0 top-0 block w-6 h-6 rounded-full bg-white shadow-md"></span></label>
+                                            <label for="glossary-toggle" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer"><span class="dot absolute left-0 top-0 block w-6 h-6 rounded-full shadow-md"></span></label>
                                         </div>
                                     </label>
                                     <button id="glossary-manage-btn" class="ml-2 text-blue-500 hover:underline text-sm font-semibold hidden">Kelola</button>
+                                    <button id="glossary-manage-btn" class="ml-2 text-cyan-400 hover:underline text-sm font-semibold hidden">Kelola</button>
                                 </div>
                                 <div id="translated-output-container" class="w-full bg-transparent resize-none text-lg flex-grow overflow-y-auto scrollable">
                                     <div id="translated-output" title="Klik sebuah kata untuk melihat definisinya"></div>
                                     <div id="romanization-output" class="text-base italic text-slate-500 dark:text-slate-400 mt-1"></div>
                                     <div id="alternative-translations" class="mt-2 text-sm text-slate-600 dark:text-slate-300 space-y-1 overflow-y-auto scrollable"></div>
+                                    <div id="romanization-output" class="text-base italic text-slate-400 mt-1"></div>
+                                    <div id="alternative-translations" class="mt-2 text-sm text-slate-300 space-y-1 overflow-y-auto scrollable"></div>
                                 </div>
                                 <!-- FITUR BARU: Rating dan Koreksi -->
                                 <div id="feedback-container" class="mt-2 pt-2 border-t border-slate-200 dark:border-gray-700 hidden">
                                     <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Beri peringkat terjemahan ini:</p>
+                                <div id="feedback-container" class="mt-2 pt-2 border-t border-cyan-400/20 hidden">
+                                    <p class="text-xs text-slate-400 mb-1">Beri peringkat terjemahan ini:</p>
                                     <div class="flex items-center gap-4">
                                         <div class="flex gap-2">
                                             <button class="feedback-btn p-1 text-slate-400 hover:text-green-500" data-rating="good" title="Bagus">
+                                            <button class="feedback-btn p-1 text-slate-400 hover:text-green-400" data-rating="good" title="Bagus">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333V17a1 1 0 001 1h6.364a1 1 0 00.943-.684l1.757-6.15a1 1 0 00-.943-1.316H12V4.5a1.5 1.5 0 00-3 0v5.833H6z" /></svg>
                                             </button>
                                             <button class="feedback-btn p-1 text-slate-400 hover:text-red-500" data-rating="bad" title="Kurang Baik">
+                                            <button class="feedback-btn p-1 text-slate-400 hover:text-pink-500" data-rating="bad" title="Kurang Baik">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667V3a1 1 0 00-1-1H6.636a1 1 0 00-.943.684l-1.757 6.15a1 1 0 00.943 1.316H8v8.5a1.5 1.5 0 003 0V9.667h3z" /></svg>
                                             </button>
                                         </div>
                                         <button id="suggest-edit-btn" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Sarankan perbaikan</button>
+                                        <button id="suggest-edit-btn" class="text-xs text-cyan-400 hover:underline">Sarankan perbaikan</button>
                                     </div>
                                 </div>
                                 <div class="flex justify-between items-center mt-2 pt-2 border-t border-slate-200 dark:border-gray-700">
+                                <div class="flex justify-between items-center mt-2 pt-2 border-t border-cyan-400/20">
                                     <div class="flex gap-2 items-center">
                                         <button id="target-speak-btn" aria-label="Dengarkan terjemahan" title="Dengarkan terjemahan" class="p-2 text-slate-400 hover:text-blue-500 transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M5.071 8.043a.75.75 0 01.275-.566l3.5-2.5a.75.75 0 011.154.566v10a.75.75 0 01-1.154.566l-3.5-2.5a.75.75 0 01-.275-.566H4.75a.75.75 0 010-1.5h.321z" /><path d="M11.75 6.12a.75.75 0 011.5 0v7.76a.75.75 0 01-1.5 0V6.12zM14.622 4.332a.75.75 0 011.06 0l.07.07a.75.75 0 010 1.06l-.07.07a5.5 5.5 0 010 7.778l.07.07a.75.75 0 010 1.06l-.07.07a.75.75 0 01-1.06 0l-.07-.07a7 7 0 010-9.9l.07-.07z" /></svg></button>
                                         <select id="voice-tone-select" class="hidden sm:inline-block text-xs bg-slate-100 dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-md p-1 focus:outline-none">
+                                        <button id="target-speak-btn" aria-label="Dengarkan terjemahan" title="Dengarkan terjemahan" class="p-2 text-slate-400 hover:text-cyan-400 transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M5.071 8.043a.75.75 0 01.275-.566l3.5-2.5a.75.75 0 011.154.566v10a.75.75 0 01-1.154.566l-3.5-2.5a.75.75 0 01-.275-.566H4.75a.75.75 0 010-1.5h.321z" /><path d="M11.75 6.12a.75.75 0 011.5 0v7.76a.75.75 0 01-1.5 0V6.12zM14.622 4.332a.75.75 0 011.06 0l.07.07a.75.75 0 010 1.06l-.07.07a5.5 5.5 0 010 7.778l.07.07a.75.75 0 010 1.06l-.07.07a.75.75 0 01-1.06 0l-.07-.07a7 7 0 010-9.9l.07-.07z" /></svg></button>
+                                        <select id="voice-tone-select" class="hidden sm:inline-block text-xs p-1 focus:outline-none">
                                             <option value="standar">Nada Standar</option>
                                             <option value="kasual">Nada Kasual</option>
                                             <option value="formal">Nada Formal</option>
@@ -328,12 +525,17 @@
                                         <button id="google-search-btn" aria-label="Telusuri dengan Google" title="Telusuri dengan Google" class="p-2 text-slate-400 hover:text-blue-500 transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M21.35,11.1H12.18V13.83H18.69C18.36,17.64 15.19,19.27 12.19,19.27C8.36,19.27 5,16.25 5,12C5,7.75 8.36,4.73 12.19,4.73C15.28,4.73 17.04,6.84 17.04,6.84L19.05,4.83C19.05,4.83 16.56,2 12.19,2C6.42,2 2.03,6.8 2.03,12C2.03,17.2 6.42,22 12.19,22C17.6,22 21.54,18.33 21.54,12.25C21.54,11.76 21.48,11.43 21.35,11.1Z" /></svg></button>
                                         <button id="share-btn" aria-label="Bagikan" title="Bagikan" class="p-2 text-slate-400 hover:text-blue-500 transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M13 4.5a2.5 2.5 0 11.702 4.281l-4.147 2.13a2.502 2.502 0 010 1.178l4.147 2.13A2.5 2.5 0 1113 15.5v-1.352a2.504 2.504 0 01-.298-.918l-4.147-2.13a2.5 2.5 0 010-1.178l4.147-2.13A2.504 2.504 0 0113 5.852V4.5z" /></svg></button>
                                         <button id="save-translation-btn" aria-label="Simpan terjemahan" title="Simpan terjemahan" class="p-2 text-slate-400 hover:text-yellow-500 transition-colors"><svg class="w-5 h-5 save-btn-icon" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.539 1.118l-3.975-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg></button>
+                                        <button id="copy-btn" aria-label="Salin" title="Salin" class="p-2 text-slate-400 hover:text-cyan-400 transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M7 3.5A1.5 1.5 0 018.5 2h5.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 01.439 1.061V16.5A1.5 1.5 0 0116.5 18h-8A1.5 1.5 0 017 16.5v-13z" /><path d="M6 4.5A2.5 2.5 0 003.5 7v10A2.5 2.5 0 006 19.5h7A2.5 2.5 0 0015.5 17V7A2.5 2.5 0 0013 4.5H6z" /></svg></button>
+                                        <button id="google-search-btn" aria-label="Telusuri dengan Google" title="Telusuri dengan Google" class="p-2 text-slate-400 hover:text-cyan-400 transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M21.35,11.1H12.18V13.83H18.69C18.36,17.64 15.19,19.27 12.19,19.27C8.36,19.27 5,16.25 5,12C5,7.75 8.36,4.73 12.19,4.73C15.28,4.73 17.04,6.84 17.04,6.84L19.05,4.83C19.05,4.83 16.56,2 12.19,2C6.42,2 2.03,6.8 2.03,12C2.03,17.2 6.42,22 12.19,22C17.6,22 21.54,18.33 21.54,12.25C21.54,11.76 21.48,11.43 21.35,11.1Z" /></svg></button>
+                                        <button id="share-btn" aria-label="Bagikan" title="Bagikan" class="p-2 text-slate-400 hover:text-cyan-400 transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M13 4.5a2.5 2.5 0 11.702 4.281l-4.147 2.13a2.502 2.502 0 010 1.178l4.147 2.13A2.5 2.5 0 1113 15.5v-1.352a2.504 2.504 0 01-.298-.918l-4.147-2.13a2.5 2.5 0 010-1.178l4.147-2.13A2.504 2.504 0 0113 5.852V4.5z" /></svg></button>
+                                        <button id="save-translation-btn" aria-label="Simpan terjemahan" title="Simpan terjemahan" class="p-2 text-slate-400 hover:text-yellow-400 transition-colors"><svg class="w-5 h-5 save-btn-icon" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.539 1.118l-3.975-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg></button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div id="dictionary-result" class="mt-4 p-4 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-lg hidden shadow-sm"></div>
+                    <div id="dictionary-result" class="mt-4 p-4 sub-panel hidden"></div>
                 </div>
 
                 <!-- Voice Translation Panel -->
@@ -590,16 +792,20 @@
             <div id="bottom-buttons" class="mt-12 flex gap-8 sm:gap-12 text-center hidden">
                 <button id="history-btn" class="flex flex-col items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"><div class="p-3 border-2 border-slate-300 dark:border-gray-600 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div><span class="text-sm font-semibold">Histori</span></button>
                 <button id="saved-btn" class="flex flex-col items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"><div class="p-3 border-2 border-slate-300 dark:border-gray-600 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.539 1.118l-3.975-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg></div><span class="text-sm font-semibold">Tersimpan</span></button>
+                <button id="history-btn" class="flex flex-col items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors"><div class="p-3 border-2 border-cyan-400/30 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div><span class="text-sm font-semibold">Histori</span></button>
+                <button id="saved-btn" class="flex flex-col items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors"><div class="p-3 border-2 border-cyan-400/30 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.539 1.118l-3.975-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg></div><span class="text-sm font-semibold">Tersimpan</span></button>
             </div>
         </main>
         
         <!-- Footer with Version Info -->
         <footer class="text-center p-4 mt-8 text-xs text-slate-500 dark:text-slate-400">
+        <footer class="text-center p-4 mt-8 text-xs text-slate-400">
             <div id="update-summary-container">
                 <!-- Konten akan dimuat dari Firestore -->
             </div>
             <!-- Tombol Kelola Pembaruan hanya akan muncul jika pengguna login -->
             <button id="manage-updates-btn" class="mt-4 hidden text-xs text-blue-600 dark:text-blue-400 hover:underline">Kelola Pembaruan</button>
+            <button id="manage-updates-btn" class="mt-4 hidden text-xs text-cyan-400 hover:underline">Kelola Pembaruan</button>
         </footer>
     </div>
 
@@ -615,13 +821,27 @@
     <div id="correction-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-50"><div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col"><div class="flex justify-between items-center p-4 border-b dark:border-gray-700"><h3 class="text-lg font-semibold">Saran Perbaikan Teks</h3><button class="close-modal-btn text-2xl hover:text-red-500">&times;</button></div><div class="p-4 overflow-y-auto scrollable space-y-4"><div><h4 class="font-semibold mb-2">Teks Asli:</h4><pre id="original-text-correction" class="w-full bg-slate-100 dark:bg-gray-700 rounded-lg p-3 whitespace-pre-wrap font-sans"></pre></div><div><h4 class="font-semibold mb-2">Teks yang Disarankan:</h4><div id="correction-diff" class="w-full bg-slate-100 dark:bg-gray-700 rounded-lg p-3 whitespace-pre-wrap font-sans"></div></div></div><div class="flex justify-end gap-4 p-4 border-t dark:border-gray-700"><button id="reject-correction-btn" class="bg-slate-200 dark:bg-gray-600 font-semibold py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-gray-500 transition-colors">Batal</button><button id="accept-correction-btn" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">Terapkan Perbaikan</button></div></div></div>
     <div id="profile-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-50"><div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md max-h-[80vh] flex flex-col"><div class="flex justify-between items-center p-4 border-b dark:border-gray-700"><h3 class="text-lg font-semibold">Profil & Lencana</h3><button class="close-modal-btn text-2xl hover:text-red-500">&times;</button></div><div class="p-6 overflow-y-auto scrollable text-center"><p class="font-semibold" id="profile-email"></p><p class="text-2xl font-bold text-amber-500 my-2" id="profile-points">0 Poin</p><hr class="dark:border-gray-700 my-4"><h4 class="font-semibold mb-4">Lencana Saya</h4><div id="badges-container" class="grid grid-cols-3 sm:grid-cols-4 gap-4"><div class="badge earned text-center" title="Penerjemah Pemula: Selesaikan 10 terjemahan."><div class="text-4xl">🔰</div><p class="text-xs mt-1">Pemula</p></div><div class="badge text-center" title="Penerjemah Ahli: Selesaikan 100 terjemahan."><div class="text-4xl">⭐</div><p class="text-xs mt-1">Ahli</p></div><div class="badge text-center" title="Korektor Andal: Koreksi 5 teks dengan AI."><div class="text-4xl">✍️</div><p class="text-xs mt-1">Korektor</p></div><div class="badge text-center" title="Polyglot: Terjemahkan ke 5 bahasa berbeda."><div class="text-4xl">🌐</div><p class="text-xs mt-1">Polyglot</p></div></div></div></div></div>
     <div id="word-of-the-day-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-50"><div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md"><div class="flex justify-between items-center p-4 border-b dark:border-gray-700"><h3 class="text-lg font-semibold">Kata Hari Ini</h3><button class="close-modal-btn text-2xl hover:text-red-500">&times;</button></div><div id="word-of-the-day-content" class="p-6 text-center"></div><div class="p-4 border-t dark:border-gray-700 text-center"><button id="change-word-btn" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Ubah Kata</button><p id="change-word-counter" class="text-xs text-slate-500 mt-2"></p></div></div></div>
+    <div id="login-modal" class="modal fixed inset-0 items-center justify-center p-4 z-50"><div class="modal-content w-full max-w-sm"><div class="flex justify-between items-center p-4 border-b border-cyan-400/20"><h3 class="text-lg font-semibold">Login</h3><button class="close-modal-btn text-2xl hover:text-pink-500">&times;</button></div><form id="login-form" class="p-4 space-y-4"><div><label for="login-email" class="block text-sm font-medium">Email</label><input id="login-email" type="email" required class="w-full p-2 mt-1"></div><div><label for="login-password" class="block text-sm font-medium">Password</label><input id="login-password" type="password" required class="w-full p-2 mt-1"></div><button type="submit" class="w-full h-btn h-btn-primary">Login</button><p id="login-error" class="text-pink-500 text-sm text-center"></p></form></div></div>
+    <div id="register-modal" class="modal fixed inset-0 items-center justify-center p-4 z-50"><div class="modal-content w-full max-w-sm"><div class="flex justify-between items-center p-4 border-b border-cyan-400/20"><h3 class="text-lg font-semibold">Daftar Akun Baru</h3><button class="close-modal-btn text-2xl hover:text-pink-500">&times;</button></div><form id="register-form" class="p-4 space-y-4"><div><label for="register-email" class="block text-sm font-medium">Email</label><input id="register-email" type="email" required class="w-full p-2 mt-1"></div><div><label for="register-password" class="block text-sm font-medium">Password (min. 6 karakter)</label><input id="register-password" type="password" required class="w-full p-2 mt-1"></div><button type="submit" class="w-full h-btn h-btn-primary">Daftar</button><p id="register-error" class="text-pink-500 text-sm text-center"></p></form></div></div>
+    <div id="history-modal" class="modal fixed inset-0 items-center justify-center p-4 z-50"><div class="modal-content w-full max-w-2xl max-h-[80vh] flex flex-col"><div class="flex justify-between items-center p-4 border-b border-cyan-400/20"><h3 class="text-lg font-semibold">Histori Terjemahan</h3><button class="close-modal-btn text-2xl hover:text-pink-500">&times;</button></div><div id="history-list" class="p-4 overflow-y-auto scrollable"></div></div></div>
+    <div id="saved-modal" class="modal fixed inset-0 items-center justify-center p-4 z-50"><div class="modal-content w-full max-w-2xl max-h-[80vh] flex flex-col"><div class="flex justify-between items-center p-4 border-b border-cyan-400/20"><h3 class="text-lg font-semibold">Terjemahan Tersimpan</h3><button class="close-modal-btn text-2xl hover:text-pink-500">&times;</button></div><div id="saved-list" class="p-4 overflow-y-auto scrollable"></div></div></div>
+    <div id="settings-modal" class="modal fixed inset-0 items-center justify-center p-4 z-50"><div class="modal-content w-full max-w-md"><div class="flex justify-between items-center p-4 border-b border-cyan-400/20"><h3 class="text-lg font-semibold">Pengaturan</h3><button class="close-modal-btn text-2xl hover:text-pink-500">&times;</button></div><div class="p-4 space-y-4"><fieldset><legend class="font-semibold mb-2">Kecepatan Suara</legend><div class="flex gap-4" id="speed-settings"><label><input type="radio" name="speed" value="1" checked> Normal</label><label><input type="radio" name="speed" value="0.7"> Lambat</label><label><input type="radio" name="speed" value="0.4"> Lebih Lambat</label></div></fieldset><fieldset><legend class="font-semibold mb-2">Ukuran Font</legend><div class="flex items-center gap-2"><span class="text-sm">A</span><input id="font-size-slider" type="range" min="12" max="24" value="16" class="w-full"><span class="text-xl">A</span></div></fieldset></div></div></div>
+    <div id="ai-style-modal" class="modal fixed inset-0 items-center justify-center p-4 z-50"><div class="modal-content w-full max-w-md"><div class="flex justify-between items-center p-4 border-b border-cyan-400/20"><h3 class="text-lg font-semibold">Pilih Gaya Penulisan</h3><button class="close-modal-btn text-2xl hover:text-pink-500">&times;</button></div><div class="p-4" id="ai-style-options"><div class="grid grid-cols-2 gap-2"><label class="block"><input type="radio" name="ai-style" value="Standar" checked> Standar</label><label class="block"><input type="radio" name="ai-style" value="Sederhana"> Sederhana</label><label class="block"><input type="radio" name="ai-style" value="Profesional"> Profesional</label><label class="block"><input type="radio" name="ai-style" value="Formal"> Formal</label><label class="block"><input type="radio" name="ai-style" value="Akademik"> Akademik</label><label class="block"><input type="radio" name="ai-style" value="Kasual"> Kasual</label></div><button id="apply-style-btn" class="mt-4 w-full h-btn h-btn-primary">Terapkan Gaya</button></div></div></div>
+    <div id="glossary-modal" class="modal fixed inset-0 items-center justify-center p-4 z-50"><div class="modal-content w-full max-w-2xl max-h-[80vh] flex flex-col"><div class="flex justify-between items-center p-4 border-b border-cyan-400/20"><h3 class="text-lg font-semibold">Kelola Glosarium</h3><button class="close-modal-btn text-2xl hover:text-pink-500">&times;</button></div><div class="p-4 space-y-4"><div class="flex gap-2"><select id="glossary-source-lang" class="w-full p-2"></select><input id="glossary-source-text" type="text" placeholder="Teks sumber" class="w-full p-2"></div><div class="flex gap-2"><select id="glossary-target-lang" class="w-full p-2"></select><input id="glossary-target-text" type="text" placeholder="Teks sasaran" class="w-full p-2"></div><button id="add-glossary-btn" class="w-full h-btn h-btn-primary">Tambah Entri</button></div><div id="glossary-list" class="p-4 overflow-y-auto scrollable border-t border-cyan-400/20"></div></div></div>
+    <div id="api-key-modal" class="modal fixed inset-0 items-center justify-center p-4 z-50"><div class="modal-content w-full max-w-md"><div class="flex justify-between items-center p-4 border-b border-cyan-400/20"><h3 class="text-lg font-semibold">Kelola Kunci API</h3><button class="close-modal-btn text-2xl hover:text-pink-500">&times;</button></div><div class="p-4 space-y-4"><p class="text-sm text-slate-300">Gunakan kunci API dari OpenRouter atau Google AI Studio. <span class="font-semibold">Catatan:</span> Fitur terjemahan Audio 🎵 memerlukan kunci API Gemini asli dari Google AI Studio.</p><div><label for="api-provider-select" class="block text-sm font-medium mb-1">Pilih Penyedia AI:</label><select id="api-provider-select" class="w-full p-2"><option value="gemini">Gemini (via OpenRouter / Google)</option><option value="deepseek">DeepSeek (via OpenRouter)</option><option value="chatgpt">ChatGPT (via OpenRouter)</option></select></div><div><label for="api-key-input" class="block text-sm font-medium mb-1">Kunci API:</label><input id="api-key-input" type="password" placeholder="Masukkan kunci API Gemini Anda" class="w-full p-2"></div><button id="save-api-key-btn" class="w-full h-btn h-btn-primary">Simpan Kunci</button></div></div></div>
+    <div id="correction-modal" class="modal fixed inset-0 items-center justify-center p-4 z-50"><div class="modal-content w-full max-w-2xl max-h-[80vh] flex flex-col"><div class="flex justify-between items-center p-4 border-b border-cyan-400/20"><h3 class="text-lg font-semibold">Saran Perbaikan Teks</h3><button class="close-modal-btn text-2xl hover:text-pink-500">&times;</button></div><div class="p-4 overflow-y-auto scrollable space-y-4"><div><h4 class="font-semibold mb-2">Teks Asli:</h4><pre id="original-text-correction" class="w-full sub-panel p-3 whitespace-pre-wrap font-sans"></pre></div><div><h4 class="font-semibold mb-2">Teks yang Disarankan:</h4><div id="correction-diff" class="w-full sub-panel p-3 whitespace-pre-wrap font-sans"></div></div></div><div class="flex justify-end gap-4 p-4 border-t border-cyan-400/20"><button id="reject-correction-btn" class="h-btn">Batal</button><button id="accept-correction-btn" class="h-btn h-btn-primary">Terapkan Perbaikan</button></div></div></div>
+    <div id="profile-modal" class="modal fixed inset-0 items-center justify-center p-4 z-50"><div class="modal-content w-full max-w-md max-h-[80vh] flex flex-col"><div class="flex justify-between items-center p-4 border-b border-cyan-400/20"><h3 class="text-lg font-semibold">Profil & Lencana</h3><button class="close-modal-btn text-2xl hover:text-pink-500">&times;</button></div><div class="p-6 overflow-y-auto scrollable text-center"><p class="font-semibold" id="profile-email"></p><p class="text-2xl font-bold text-yellow-400 my-2" id="profile-points">0 Poin</p><hr class="border-cyan-400/20 my-4"><h4 class="font-semibold mb-4">Lencana Saya</h4><div id="badges-container" class="grid grid-cols-3 sm:grid-cols-4 gap-4"><div class="badge earned text-center" title="Penerjemah Pemula: Selesaikan 10 terjemahan."><div class="text-4xl">🔰</div><p class="text-xs mt-1">Pemula</p></div><div class="badge text-center" title="Penerjemah Ahli: Selesaikan 100 terjemahan."><div class="text-4xl">⭐</div><p class="text-xs mt-1">Ahli</p></div><div class="badge text-center" title="Korektor Andal: Koreksi 5 teks dengan AI."><div class="text-4xl">✍️</div><p class="text-xs mt-1">Korektor</p></div><div class="badge text-center" title="Polyglot: Terjemahkan ke 5 bahasa berbeda."><div class="text-4xl">🌐</div><p class="text-xs mt-1">Polyglot</p></div></div></div></div></div>
+    <div id="word-of-the-day-modal" class="modal fixed inset-0 items-center justify-center p-4 z-50"><div class="modal-content w-full max-w-md"><div class="flex justify-between items-center p-4 border-b border-cyan-400/20"><h3 class="text-lg font-semibold">Kata Hari Ini</h3><button class="close-modal-btn text-2xl hover:text-pink-500">&times;</button></div><div id="word-of-the-day-content" class="p-6 text-center"></div><div class="p-4 border-t border-cyan-400/20 text-center"><button id="change-word-btn" class="h-btn h-btn-primary">Ubah Kata</button><p id="change-word-counter" class="text-xs text-slate-500 mt-2"></p></div></div></div>
     
     <!-- MODAL BARU: Saran Koreksi -->
     <div id="correction-suggestion-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-50">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col">
             <div class="flex justify-between items-center p-4 border-b dark:border-gray-700">
+        <div class="modal-content w-full max-w-2xl max-h-[80vh] flex flex-col">
+            <div class="flex justify-between items-center p-4 border-b border-cyan-400/20">
                 <h3 class="text-lg font-semibold">Sarankan Perbaikan</h3>
                 <button class="close-modal-btn text-2xl hover:text-red-500">&times;</button>
+                <button class="close-modal-btn text-2xl hover:text-pink-500">&times;</button>
             </div>
             <div class="p-4 overflow-y-auto scrollable space-y-4">
                 <div>
@@ -640,6 +860,9 @@
             <div class="flex justify-end gap-4 p-4 border-t dark:border-gray-700">
                 <button id="cancel-suggestion-btn" class="bg-slate-200 dark:bg-gray-600 font-semibold py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-gray-500 transition-colors">Batal</button>
                 <button id="submit-suggestion-btn" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">Kirim Saran</button>
+            <div class="flex justify-end gap-4 p-4 border-t border-cyan-400/20">
+                <button id="cancel-suggestion-btn" class="h-btn">Batal</button>
+                <button id="submit-suggestion-btn" class="h-btn h-btn-primary">Kirim Saran</button>
             </div>
         </div>
     </div>
@@ -648,8 +871,11 @@
     <div id="manage-updates-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-50">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md">
             <div class="flex justify-between items-center p-4 border-b dark:border-gray-700">
+        <div class="modal-content w-full max-w-md">
+            <div class="flex justify-between items-center p-4 border-b border-cyan-400/20">
                 <h3 class="text-lg font-semibold">Kelola Pembaruan Aplikasi</h3>
                 <button class="close-modal-btn text-2xl hover:text-red-500">&times;</button>
+                <button class="close-modal-btn text-2xl hover:text-pink-500">&times;</button>
             </div>
             <div class="p-4 space-y-4">
                 <div>
@@ -661,12 +887,14 @@
                     <textarea id="update-text" rows="8" class="w-full p-2 mt-1 border rounded dark:bg-gray-700 dark:border-gray-600" placeholder="Contoh:&#10;Penambahan fitur A&#10;Perbaikan bug B"></textarea>
                 </div>
                 <button id="save-updates-btn" class="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition-colors">Simpan Pembaruan</button>
+                <button id="save-updates-btn" class="w-full h-btn h-btn-primary">Simpan Pembaruan</button>
             </div>
         </div>
     </div>
 
     <!-- Notification -->
     <div id="notification" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg opacity-0 transition-all duration-300 z-50">Teks disalin!</div>
+    <div id="notification" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-cyan-900/80 text-white px-4 py-2 rounded-lg shadow-lg opacity-0 transition-all duration-300 z-50 border border-cyan-400">Teks disalin!</div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
     <script>
@@ -793,14 +1021,11 @@
         let currentQuiz = null;
         let quizHistory = [];
         let cameraStream = null;
-        let userProfileUnsubscribe = null;
         let unsubscribeFromPartners = null;
         
         // --- 3. API & CORE FUNCTIONS ---
         async function translate(text, sourceLang, targetLang) {
              if (!text) return ["", "", []];
-        async function translate(text, sourceLang, targetLang) { // FUNGSI DIPERBAIKI
-            if (!text) return ["", "", []];
             try {
                 const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&dt=rm&dt=at&q=${encodeURIComponent(text)}`;
                 const response = await fetch(url);
@@ -809,16 +1034,6 @@
                 const translatedText = data[0].map(segment => segment[0]).join('');
                 let romanization = data[0]?.[data[0].length - 1]?.[2] || "";
                 let alternatives = data[5]?.[0]?.[2]?.map(alt => alt[0]) || [];
-                
-                // Penanganan respons yang lebih aman
-                let translatedText = '';
-                if (data && data[0]) {
-                    translatedText = data[0].map(segment => segment[0]).join('');
-                }
-
-                const romanization = data?.[0]?.[data[0].length - 1]?.[3] || data?.[0]?.[data[0].length - 1]?.[2] || "";
-                const alternatives = data?.[5]?.[0]?.[2]?.map(alt => alt[0]) || [];
-
                 return [translatedText, romanization, alternatives];
             } catch (error) {
                 console.error('Translation error:', error);
@@ -1238,6 +1453,7 @@
         function loadHistoryItem(id) { const item = getFromStorage(HISTORY_KEY).find(i => i.id === id); if (item) { document.querySelector('.tab-btn[data-tab="text"]').click(); sourceLangEl.value = item.sourceLang; targetLangEl.value = item.targetLang; sourceTextEl.value = item.sourceText; handleTextTranslation(); historyModal.classList.remove('flex'); savedModal.classList.remove('flex'); } }
         function mainListClickHandler(e) { const actionBtn = e.target.closest('.action-btn'); if (actionBtn) { const { action, id } = actionBtn.dataset; let history = getFromStorage(HISTORY_KEY); let saved = getFromStorage(SAVED_KEY); const numericId = parseInt(id, 10); if (action === 'save') { const itemToSave = history.find(item => item.id === numericId); if (itemToSave && !saved.some(s => s.id === numericId)) { saved.unshift(itemToSave); saveToStorage(SAVED_KEY, saved); } } else if (action === 'unsave') { saved = saved.filter(item => item.id !== numericId); saveToStorage(SAVED_KEY, saved); } else if (action === 'delete-history') { history = history.filter(item => item.id !== numericId); saved = saved.filter(item => item.id !== numericId); saveToStorage(HISTORY_KEY, history); saveToStorage(SAVED_KEY, saved); } renderList(historyList, getFromStorage(HISTORY_KEY), 'history'); renderList(savedList, getFromStorage(SAVED_KEY), 'saved'); updateSaveButtonState(); return; } const content = e.target.closest('.history-item-content'); if (content) { loadHistoryItem(parseInt(content.dataset.id, 10)); } }
         function updateView() { imageTransformer.style.transform = `scale(${zoomState.level}) translate(${zoomState.pan.x}px, ${zoomState.pan.y}px)`; zoomLevelDisplay.textContent = `${Math.round(zoomState.level * 100)}%`; }
+        function updateView() { if(imageTransformer) { imageTransformer.style.transform = `scale(${zoomState.level}) translate(${zoomState.pan.x}px, ${zoomState.pan.y}px)`; zoomLevelDisplay.textContent = `${Math.round(zoomState.level * 100)}%`; } }
         function resetZoom() { zoomState = { level: 1, pan: { x: 0, y: 0 }, isPanning: false, start: { x: 0, y: 0 } }; updateView(); }
         function addConversationBubble(sourceText, translatedText, sourceLang) { conversationPlaceholder.classList.add('hidden'); const bubble = document.createElement('div'); const isLang1 = sourceLang === conversationLang1.value || (sourceLang === 'auto' && activeMicButton.id === 'mic-btn-1'); bubble.className = `w-full flex mb-2 ${isLang1 ? 'justify-end' : 'justify-start'}`; bubble.innerHTML = `<div class="max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-lg ${isLang1 ? 'bg-blue-500 text-white' : 'bg-slate-200 dark:bg-gray-700'}"><p class="font-semibold">${sourceText}</p><p class="text-sm opacity-90 mt-1">${translatedText}</p></div>`; conversationView.appendChild(bubble); conversationView.scrollTop = conversationView.scrollHeight; }
         function renderFeedbackUI() { feedbackContainer.classList.remove('hidden'); document.querySelectorAll('.feedback-btn').forEach(btn => btn.classList.remove('selected')); }
@@ -1254,7 +1470,6 @@
                     details: metadata,
                     ab_test_group: localStorage.getItem('ab_test_group') || 'A' // Melacak grup A/B test
                 });
-                updateUserStatsAndBadges(activityType, metadata); // Panggil fungsi untuk update poin & lencana
             } catch (error) {
                 console.error("Error logging activity:", error);
             }
@@ -1270,6 +1485,8 @@
             if (group === 'B') {
                 registerBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
                 registerBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                // registerBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                // registerBtn.classList.add('bg-green-600', 'hover:bg-green-700');
             }
             console.log(`User is in A/B Test Group: ${group}`);
         }
@@ -1368,6 +1585,7 @@
                         <p class="text-xs text-slate-500">Native: ${languages[p.native] || p.native}, Latihan: ${languages[p.practicing] || p.practicing}</p>
                     </div>
                     <button class="bg-blue-500 text-white text-xs font-bold py-1 px-3 rounded-full hover:bg-blue-600">Hubungi</button>
+                    <button class="h-btn text-xs py-1 px-3">Hubungi</button>
                 `;
                 partnerEl.querySelector('button').onclick = () => {
                     logUserActivity('connect_language_partner');
@@ -1399,6 +1617,8 @@
                 <details class="mt-2 cursor-pointer max-w-lg mx-auto">
                     <summary class="font-semibold hover:text-blue-500">Ringkasan Pembaruan</summary>
                     <ul class="text-left mt-2 list-disc list-inside space-y-1 bg-slate-200 dark:bg-gray-800 p-3 rounded-lg">
+                    <summary class="font-semibold hover:text-cyan-400">Ringkasan Pembaruan</summary>
+                    <ul class="text-left mt-2 list-disc list-inside space-y-1 sub-panel p-3">
                         ${htmlUpdates}
                     </ul>
                 </details>
@@ -1476,11 +1696,13 @@
             users.forEach(user => {
                 const userItem = document.createElement('div');
                 userItem.className = `p-3 rounded-lg border dark:border-gray-600 flex items-center justify-between ${user.isBanned ? 'bg-red-100 dark:bg-red-900' : 'bg-white dark:bg-gray-800'}`;
+                userItem.className = `p-3 rounded-lg border border-cyan-400/20 flex items-center justify-between ${user.isBanned ? 'bg-pink-900/30' : ''}`;
                 userItem.innerHTML = `
                     <div>
                         <p class="font-semibold text-sm">${user.email}</p>
                         <p class="text-xs text-slate-500">${user.id}</p>
                         <p class="text-xs ${user.isBanned ? 'text-red-600' : 'text-slate-500'}">Status: ${user.isBanned ? 'Diblokir' : 'Aktif'}</p>
+                        <p class="text-xs ${user.isBanned ? 'text-pink-500' : 'text-green-400'}">Status: ${user.isBanned ? 'Diblokir' : 'Aktif'}</p>
                     </div>
                     <div class="flex items-center gap-2">
                         ${user.isBanned ? 
@@ -1544,73 +1766,6 @@
             }
         }
 
-        // --- FUNGSI BARU: GAMIFIKASI (POIN & LENCANA) ---
-        const badgeDefinitions = {
-            beginner_translator: { name: "Penerjemah Pemula", condition: (stats) => stats.translationCount >= 10 },
-            expert_translator: { name: "Penerjemah Ahli", condition: (stats) => stats.translationCount >= 100 },
-            corrector: { name: "Korektor Andal", condition: (stats) => stats.aiCorrectionCount >= 5 },
-            polyglot: { name: "Polyglot", condition: (stats) => (stats.languagesUsed?.length || 0) >= 5 },
-            image_wizard: { name: "Penyihir Gambar", condition: (stats) => stats.imageTranslationCount >= 10 },
-        };
-
-        async function updateUserStatsAndBadges(activityType, metadata) {
-            if (!currentUser) return;
-            const { db, doc, getDoc, updateDoc, increment, arrayUnion } = window.firebaseServices;
-            const userRef = doc(db, "users", currentUser.uid);
-
-            const pointsMap = {
-                'translate_text': 1, 'translate_voice': 3, 'translate_image': 5,
-                'translate_document': 5, 'translate_subtitle': 10, 'translate_lyrics': 2,
-                'translate_code': 2, 'check_grammar': 2, 'start_quiz': 1
-            };
-            const pointsToAdd = pointsMap[activityType] || 0;
-
-            try {
-                const userDoc = await getDoc(userRef);
-                if (!userDoc.exists()) return;
-
-                const stats = userDoc.data();
-                let updates = { points: increment(pointsToAdd) };
-                let newStats = { ...stats, points: (stats.points || 0) + pointsToAdd };
-
-                // Update counters
-                if (activityType.startsWith('translate_')) {
-                    updates.translationCount = increment(1);
-                    newStats.translationCount = (stats.translationCount || 0) + 1;
-                    if (metadata.to) {
-                        updates.languagesUsed = arrayUnion(metadata.to);
-                        newStats.languagesUsed = [...new Set([...(stats.languagesUsed || []), metadata.to])];
-                    }
-                }
-                if (activityType === 'check_grammar') {
-                    updates.aiCorrectionCount = increment(1);
-                    newStats.aiCorrectionCount = (stats.aiCorrectionCount || 0) + 1;
-                }
-                 if (activityType === 'translate_image') {
-                    updates.imageTranslationCount = increment(1);
-                    newStats.imageTranslationCount = (stats.imageTranslationCount || 0) + 1;
-                }
-
-                // Check for new badges
-                const newlyEarnedBadges = [];
-                for (const badgeId in badgeDefinitions) {
-                    if (!stats.badges?.includes(badgeId) && badgeDefinitions[badgeId].condition(newStats)) {
-                        newlyEarnedBadges.push(badgeId);
-                    }
-                }
-
-                if (newlyEarnedBadges.length > 0) {
-                    updates.badges = arrayUnion(...newlyEarnedBadges);
-                    updates.points = increment(pointsToAdd + (newlyEarnedBadges.length * 25)); // Bonus 25 poin per lencana
-                    newlyEarnedBadges.forEach(badgeId => {
-                        setTimeout(() => showNotification(`🎉 Lencana Baru Diperoleh: ${badgeDefinitions[badgeId].name}!`), 500);
-                    });
-                }
-
-                await updateDoc(userRef, updates);
-            } catch (error) { console.error("Error updating user stats:", error); }
-        }
-
         function initializeSpeechRecognition() { const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SpeechRecognition) { speechRecognitionUnsupported.classList.remove('hidden'); micBtn1.disabled = true; micBtn2.disabled = true; return; } recognition = new SpeechRecognition(); recognition.continuous = false; recognition.interimResults = true; recognition.onstart = () => { isRecording = true; if(activeMicButton) activeMicButton.classList.add('recording', 'pulse-red'); }; recognition.onend = () => { isRecording = false; if(activeMicButton) activeMicButton.classList.remove('recording', 'pulse-red'); activeMicButton = null; }; recognition.onerror = (event) => { console.error('Speech recognition error:', event.error); if(activeMicButton) activeMicButton.classList.remove('recording', 'pulse-red'); }; recognition.onresult = async (event) => { let finalTranscript = ''; for (let i = event.resultIndex; i < event.results.length; ++i) { if (event.results[i].isFinal) finalTranscript += event.results[i][0].transcript; } if (finalTranscript && activeMicButton) { const sourceLang = document.getElementById(activeMicButton.dataset.langSelect).value; const targetLang = activeMicButton.id === 'mic-btn-1' ? conversationLang2.value : conversationLang1.value; const [translated] = await translate(finalTranscript, sourceLang, targetLang); addConversationBubble(finalTranscript, translated, sourceLang); speak(translated, targetLang); saveToHistory({ id: Date.now(), sourceLang, targetLang, sourceText: `[Percakapan] ${finalTranscript}`, translatedText: translated }); logUserActivity('translate_voice'); } }; }
         window.setupAuthUI = async (user) => { 
             currentUser = user; 
@@ -1637,7 +1792,6 @@
                 }
                 await getApiKeyFromFirestore(user.uid); 
                 await getUserProfile(user.uid); 
-                listenToUserProfile(user.uid); 
             } else { 
                 currentUser = null; 
                 userApiKeys = {}; 
@@ -1651,45 +1805,12 @@
                 bottomButtons.classList.remove('flex'); 
                 manageUpdatesBtn.classList.add('hidden'); 
                 adminTabBtn.classList.add('hidden');
-                if (userProfileUnsubscribe) userProfileUnsubscribe(); // Hentikan listener saat logout
                 goOfflineAsPartner(); 
             } 
         }
         async function getApiKeyFromFirestore(userId) { const { db, doc, getDoc } = window.firebaseServices; try { const docSnap = await getDoc(doc(db, 'users', userId)); if (docSnap.exists() && docSnap.data().apiKeys) { userApiKeys = docSnap.data().apiKeys; } else { userApiKeys = {}; } } catch (error) { console.error("Error getting API key:", error); userApiKeys = {}; } }
         async function saveApiKeyToFirestore(userId, provider, apiKey) { const { db, doc, setDoc } = window.firebaseServices; try { if (!userApiKeys) userApiKeys = {}; userApiKeys[provider] = apiKey; await setDoc(doc(db, 'users', userId), { apiKeys: userApiKeys }, { merge: true }); showNotification('Kunci API berhasil disimpan!'); } catch (error) { showNotification('Gagal menyimpan kunci API.'); } }
         async function getUserProfile(userId) { const { db, doc, getDoc, setDoc } = window.firebaseServices; try { const docSnap = await getDoc(doc(db, 'users', userId)); if (docSnap.exists()) { const data = docSnap.data(); const points = data.points || 0; userPointsEl.textContent = points; profilePointsEl.textContent = `${points} Poin`; profileEmailEl.textContent = currentUser.email; } else { await setDoc(doc(db, 'users', userId), { email: currentUser.email, points: 0, isBanned: false, badges: [] }); } } catch (error) { console.error("Error getting user profile:", error); } }
-        
-        function listenToUserProfile(userId) {
-            const { db, doc, onSnapshot, setDoc } = window.firebaseServices;
-            const userRef = doc(db, "users", userId);
-            if (userProfileUnsubscribe) userProfileUnsubscribe(); // Hentikan listener lama jika ada
-
-            userProfileUnsubscribe = onSnapshot(userRef, async (docSnap) => {
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    const points = data.points || 0;
-                    userPointsEl.textContent = points;
-                    profilePointsEl.textContent = `${points} Poin`;
-                    profileEmailEl.textContent = currentUser.email;
-                    renderBadges(data.badges || []);
-                } else {
-                    await setDoc(userRef, { email: currentUser.email, points: 0, isBanned: false, badges: [], translationCount: 0, aiCorrectionCount: 0, imageTranslationCount: 0, languagesUsed: [] });
-                }
-            }, (error) => { console.error("Error listening to user profile:", error); });
-        }
-
-        function renderBadges(earnedBadges) {
-            const badgesContainer = document.getElementById('badges-container');
-            badgesContainer.querySelectorAll('.badge').forEach(badgeEl => {
-                const badgeId = badgeEl.dataset.badgeId;
-                if (earnedBadges.includes(badgeId)) {
-                    badgeEl.classList.add('earned');
-                } else {
-                    badgeEl.classList.remove('earned');
-                }
-            });
-        }
-
         async function showWordOfTheDay() { 
             wordOfTheDayContent.innerHTML = '<div class="loader"></div>'; 
             changeWordBtn.disabled = true; 
@@ -1765,6 +1886,29 @@
             apiProviderSelect.value = currentAiProvider;
         }
 
+        // --- FUTURISTIC ANIMATIONS ---
+        function createParticles() {
+            const container = document.getElementById('particles');
+            if (!container) return;
+            for (let i = 0; i < 50; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.top = Math.random() * 100 + 'vh';
+                p.style.animationDelay = Math.random() * 6 + 's';
+                p.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                container.appendChild(p);
+            }
+        }
+
+        function createNeuralNetwork() {
+            const container = document.getElementById('neuralBg');
+            if (!container) return;
+            // Simplified for brevity, a more complex version would create nodes and connections
+            // This is just to ensure the container exists.
+        }
+
+
         // Initialize
         const sortedLanguages = Object.entries(languages).filter(([code]) => code !== 'auto').sort(([, nameA], [, nameB]) => nameA.localeCompare(nameB));
         const autoOption = document.createElement('option'); autoOption.value = 'auto'; autoOption.textContent = 'Deteksi Otomatis'; 
@@ -1777,6 +1921,8 @@
         initializeABTesting();
         loadAiProviderPreference();
         speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices(); };
+        createParticles();
+        createNeuralNetwork();
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
         handleImageTranslation('[https://placehold.co/800x400/e2e8f0/64748b?text=Pilih+Gambar+Anda](https://placehold.co/800x400/e2e8f0/64748b?text=Pilih+Gambar+Anda)');
         fetchUpdateSummary();
@@ -1794,6 +1940,7 @@
         themeMenuButton.addEventListener('click', () => themeMenu.classList.toggle('hidden'));
         document.addEventListener('click', e => { if (!themeMenuButton.contains(e.target) && !themeMenu.contains(e.target)) themeMenu.classList.add('hidden'); });
         themeMenu.addEventListener('click', e => { e.preventDefault(); const theme = e.target.dataset.theme; if (theme) { localStorage.setItem('theme', theme); applyTheme(); themeMenu.classList.add('hidden'); } });
+        themeMenu.addEventListener('click', e => { e.preventDefault(); const theme = e.target.dataset.theme; if (theme) { localStorage.setItem('theme', theme); /* applyTheme(); */ themeMenu.classList.add('hidden'); } }); // Theme change disabled for futuristic look
         tabBtns.forEach(btn => btn.addEventListener('click', (e) => { if(btn.disabled) return; logUserActivity('change_tab', { tab: btn.dataset.tab }); tabBtns.forEach(b => { b.classList.remove('tab-active', 'text-slate-500', 'dark:text-slate-400', 'text-red-500'); if(b === btn) b.classList.add('tab-active'); else b.classList.add('text-slate-500', 'dark:text-slate-400'); }); tabPanels.forEach(p => p.classList.add('hidden')); document.getElementById(`${btn.dataset.tab}-panel`).classList.remove('hidden'); if (btn.dataset.tab === 'quiz') generateQuiz(); if (btn.dataset.tab === 'camera') startCamera(); else stopCamera(); if (btn.dataset.tab === 'partner' && currentUser) listenForPartners(); else if (unsubscribeFromPartners) unsubscribeFromPartners(); if (btn.dataset.tab === 'admin' && currentUser.email === ADMIN_EMAIL) renderAdminPanel();}));
         historyBtn.addEventListener('click', () => { renderList(historyList, getFromStorage(HISTORY_KEY), 'history'); historyModal.classList.add('flex'); });
         savedBtn.addEventListener('click', () => { renderList(savedList, getFromStorage(SAVED_KEY), 'saved'); savedModal.classList.add('flex'); });
