@@ -799,6 +799,8 @@
         // --- 3. API & CORE FUNCTIONS ---
         async function translate(text, sourceLang, targetLang) {
              if (!text) return ["", "", []];
+        async function translate(text, sourceLang, targetLang) { // FUNGSI DIPERBAIKI
+            if (!text) return ["", "", []];
             try {
                 const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&dt=rm&dt=at&q=${encodeURIComponent(text)}`;
                 const response = await fetch(url);
@@ -807,6 +809,16 @@
                 const translatedText = data[0].map(segment => segment[0]).join('');
                 let romanization = data[0]?.[data[0].length - 1]?.[2] || "";
                 let alternatives = data[5]?.[0]?.[2]?.map(alt => alt[0]) || [];
+                
+                // Penanganan respons yang lebih aman
+                let translatedText = '';
+                if (data && data[0]) {
+                    translatedText = data[0].map(segment => segment[0]).join('');
+                }
+
+                const romanization = data?.[0]?.[data[0].length - 1]?.[3] || data?.[0]?.[data[0].length - 1]?.[2] || "";
+                const alternatives = data?.[5]?.[0]?.[2]?.map(alt => alt[0]) || [];
+
                 return [translatedText, romanization, alternatives];
             } catch (error) {
                 console.error('Translation error:', error);
